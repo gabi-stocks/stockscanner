@@ -1,13 +1,16 @@
 name: DailyStockScan
 
 on:
-  workflow_dispatch: # זה הכפתור שיאפשר לך להריץ ידנית לבדיקה
+  workflow_dispatch:
   schedule:
-    - cron: '0 20 * * *' # ירוץ כל יום ב-22:00 שעון ישראל
+    - cron: '0 20 * * *'
 
 jobs:
   scanner_job:
     runs-on: ubuntu-latest
+    # נותן הרשאה לכתוב בחזרה ל-Repository
+    permissions:
+      contents: write
     steps:
       - name: Copy Repository
         uses: actions/checkout@v3
@@ -22,6 +25,12 @@ jobs:
 
       - name: Run Scan
         run: python main.py
+
+      - name: Create index if missing
+        run: |
+          if [ ! -f index.html ]; then
+            echo "<html><body><h1>No stocks found today</h1></body></html>" > index.html
+          fi
 
       - name: Save Results
         run: |
