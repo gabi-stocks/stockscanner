@@ -1,34 +1,32 @@
-name: Daily Stock Scan
+name: DailyStockScan
 
 on:
+  workflow_dispatch: # זה הכפתור שיאפשר לך להריץ ידנית לבדיקה
   schedule:
-    # ירוץ כל יום בשעה 22:00 שעון ישראל (20:00 UTC)
-    - cron: '0 20 * * *'
-  workflow_dispatch: # מאפשר הרצה ידנית בלחיצת כפתור
+    - cron: '0 20 * * *' # ירוץ כל יום ב-22:00 שעון ישראל
 
 jobs:
-  build:
+  scanner_job:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Copy Repository
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+      - name: Install Tools
+        run: pip install yfinance pandas pandas_ta requests lxml
 
-      - name: Run Scanner
+      - name: Run Scan
         run: python main.py
 
-      - name: Commit and Push Report
+      - name: Save Results
         run: |
-          git config --global user.name "StockBot"
+          git config --global user.name "ScannerBot"
           git config --global user.email "bot@github.com"
           git add index.html
-          git commit -m "Daily Report Update [skip ci]" || echo "No changes"
+          git commit -m "Update Scan Results" || echo "No changes to commit"
           git push
