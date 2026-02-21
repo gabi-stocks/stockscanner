@@ -1,35 +1,111 @@
-name: DailyStockScan
+import yfinance as yf
+import pandas as pd
+import requests
 
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 20 * * *'
+def get_detailed_info(ticker):
+    try:
+        stock = yf.Ticker(ticker)
+        # משיכת חדשות
+        news = stock.news[:2]
+        news_links = []
+        for n in news:
+            title = n.get('title', 'News')
+            link = n.get('link', '#')
+            news_links.append(f"• <a href='{link}' target='_blank'>{title}</a>")
+        
+        # משיכת אינסיידרים
+        insider = stock.insider_transactions
+        insider_val = "No Recent Data"
+        if insider is not None and not insider.empty:
+            insider_val = f"{insider.iloc[0].get('Text', 'Transaction Reported')}"
+            
+        return "<br>".join(news_links) if news_links else "No News", insider_val
+    except:
+        return "No News", "No Data"
 
-jobs:
-  scanner_job:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Copy Repository
-        uses: actions/checkout@v3
+def run_scanner():
+    # רשימה בסיסית - אפשר להוסיף כאן מניות נוספות
+    tickers = ["AAPL", "MSFT", "NVDA", "TSLA", "INTC", "PYPL", "DIS", "BA", "AVGO", "AMD", "META", "GOOGL", "AMZN", "NFLX"] 
+    results = []
+    
+    print(f"Starting scan for {len(tickers)} stocks...")
+    
+    for ticker in tickers:
+        try:
+            # הורדת נתונים
+            df = yf.download(ticker, period="2y", progress=False)
+            if df.empty or len(df) < 151:
+                continue
+            
+            # ניקוי כותרות (עבור גרסאות yfinance חדשות)
+            if isinstance(df.columns, pd.MultiIndex):
+                df.columns = df.columns.get_level_values(0)
+            
+            # חישוב ממוצעים ידני (במקום pandas_ta)
+            df['MA50'] = df['Close'].rolling(window=50).mean()
+            df['MA150'] = df['Close'].rolling(window=150).mean()
+            
+            price = float(df['Close'].iloc[-1])
+            ma50 = float(df['MA50'].iloc[-1])
+            ma150 = float(df['MA150'].iloc[-1])
+            
+            # חישוב ווליום יחסי (RVOL)
+            avg_vol = df['Volume'].rolling(window=20).mean().iloc[-1]
+            rvol = float(df['Volume'].iloc[-1] / avg_vol) if avg_vol != 0 else 0
+            
+            # חישוב ירידה של 6 חודשים (נר 126 אחורה)
+            p_6m = float(df['Close'].iloc[-126])
+            drop_6m = ((price - p_6m) / p_6m) * 100
+            
+            # בדיקת תנאים: מרחק של עד 5% מהממוצעים
+            dist_50 = abs((price - ma50) / ma50) * 100
+            dist_150 = abs((price - ma150) / ma150) * 100
+            
+            if dist_50 < 5 or dist_150 < 5:
+                news, insider = get_detailed_info(ticker)
+                results.append({
+                    "Ticker": ticker,
+                    "Price": f"{price:.2f}$",
+                    "Type": "<span style='color: #d9534f; font-weight: bold;'>💎 RECOVERY</span>" if drop_6m < -30 else "Standard",
+                    "Condition": "Near MA50" if dist_50 < 5 else "Near MA150",
+                    "RVOL": f"{rvol:.2f}",
+                    "Insider": insider,
+                    "Latest News": news
+                })
+        except Exception as e:
+            print(f"Skipping {ticker} due to error: {e}")
+            continue
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+    # יצירת קובץ ה-HTML
+    if results:
+        df_final = pd.DataFrame(results)
+        html_content = f"""
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background-color: #f8f9fa; }}
+                h1 {{ color: #343a40; border-bottom: 2px solid #007bff; padding-bottom: 10px; }}
+                table {{ border-collapse: collapse; width: 100%; background: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px; }}
+                th {{ background-color: #007bff; color: white; padding: 15px; text-align: left; }}
+                td {{ padding: 15px; border-bottom: 1px solid #dee2e6; vertical-align: top; line-height: 1.4; }}
+                tr:hover {{ background-color: #f1f3f5; }}
+                a {{ color: #007bff; text-decoration: none; }}
+                a:hover {{ text-decoration: underline; }}
+            </style>
+        </head>
+        <body>
+            <h1>📈 Stock Breakout & Recovery Report</h1>
+            <p>Report generated on: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M')}</p>
+            {df_final.to_html(escape=False, index=False)}
+        </body>
+        </html>
+        """
+        with open("index.html", "w", encoding="utf-8") as f:
+            f.write(html_content)
+    else:
+        with open("index.html", "w", encoding="utf-8") as f:
+            f.write("<html><body style='font-family: sans-serif; padding: 50px;'><h1>No stocks met the criteria today.</h1></body></html>")
 
-      - name: Install Tools
-        run: |
-          pip install yfinance pandas requests lxml
-
-      - name: Run Scan
-        run: python main.py
-
-      - name: Save Results
-        run: |
-          git config --global user.name "ScannerBot"
-          git config --global user.email "bot@github.com"
-          git add index.html
-          git commit -m "Update Scan Results" || echo "No changes"
-          git push
+if __name__ == "__main__":
+    run_scanner()
