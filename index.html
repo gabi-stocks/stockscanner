@@ -2,23 +2,23 @@
         <html>
         <head>
             <meta charset="UTF-8">
-            <title>Stock Scanner Report</title>
+            <title>Advanced Stock Scanner</title>
             <style>
-                body { font-family: 'Segoe UI', Arial, sans-serif; margin: 30px; background-color: #f4f7f6; color: #333; }
-                h1 { color: #2c3e50; text-align: center; }
-                .timestamp { text-align: center; color: #7f8c8d; margin-bottom: 20px; }
-                table { border-collapse: collapse; width: 100%; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; }
-                th { background-color: #3498db; color: white; padding: 15px; text-align: left; text-transform: uppercase; font-size: 14px; }
-                td { padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: top; font-size: 14px; }
-                tr:hover { background-color: #f9f9f9; }
-                .recovery { color: #e74c3c; font-weight: bold; }
-                a { color: #3498db; text-decoration: none; }
+                body { font-family: 'Segoe UI', Arial, sans-serif; margin: 30px; background-color: #f0f2f5; color: #1c1e21; }
+                h1 { color: #1a73e8; text-align: center; font-size: 2.5em; }
+                .timestamp { text-align: center; color: #70757a; margin-bottom: 30px; font-style: italic; }
+                table { border-collapse: collapse; width: 100%; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 12px; overflow: hidden; }
+                th { background-color: #1a73e8; color: white; padding: 18px; text-align: left; font-size: 14px; letter-spacing: 1px; }
+                td { padding: 15px; border-bottom: 1px solid #e8eaed; vertical-align: middle; font-size: 15px; }
+                tr:hover { background-color: #f8f9fa; }
+                .recovery { color: #d93025; font-weight: bold; background: #fce8e6; padding: 4px 8px; border-radius: 4px; }
+                a { text-decoration: none; }
                 a:hover { text-decoration: underline; }
             </style>
         </head>
         <body>
-            <h1>📈 S&P 500 Scanner: Near Key Moving Averages</h1>
-            <p class="timestamp">Last Updated (UTC): 2026-02-23 20:01</p>
+            <h1>📈 Smart Stock Scanner (S&P 500)</h1>
+            <p class="timestamp">Scan generated at: 2026-02-23 20:02 (UTC)</p>
             <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -28,54 +28,54 @@
       <th>Condition</th>
       <th>RVOL</th>
       <th>Insider Activity</th>
-      <th>Latest News</th>
+      <th>Market News</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>TSLA</td>
-      <td>395.68$</td>
+      <td><b>TSLA</b></td>
+      <td>395.55$</td>
       <td>BULLISH</td>
       <td>Near MA150</td>
-      <td>0.86</td>
-      <td>Sale at price 435.86 - 457.88 per share.</td>
-      <td>No News</td>
+      <td>0.87</td>
+      <td><span style='color: #e74c3c;'>🔴 Sale at price 435.86 - 457.88 per share.</span></td>
+      <td><a href='https://www.google.com/search?q=TSLA+stock+news&tbm=nws' target='_blank' style='color: #3498db; font-weight: bold;'>🔍 Search Google News</a></td>
     </tr>
     <tr>
-      <td>NVDA</td>
-      <td>190.65$</td>
+      <td><b>NVDA</b></td>
+      <td>190.43$</td>
       <td>BULLISH</td>
       <td>Near MA50</td>
       <td>0.77</td>
-      <td>Sale at price 172.40 - 179.16 per share.</td>
-      <td>No News</td>
+      <td><span style='color: #e74c3c;'>🔴 Sale at price 172.40 - 179.16 per share.</span></td>
+      <td><a href='https://www.google.com/search?q=NVDA+stock+news&tbm=nws' target='_blank' style='color: #3498db; font-weight: bold;'>🔍 Search Google News</a></td>
     </tr>
     <tr>
-      <td>GOOGL</td>
-      <td>310.53$</td>
+      <td><b>GOOGL</b></td>
+      <td>310.06$</td>
       <td>BULLISH</td>
       <td>Near MA50</td>
       <td>0.53</td>
-      <td>Sale at price 306.11 - 307.77 per share.</td>
-      <td>No News</td>
+      <td><span style='color: #e74c3c;'>🔴 Sale at price 306.11 - 307.77 per share.</span></td>
+      <td><a href='https://www.google.com/search?q=GOOGL+stock+news&tbm=nws' target='_blank' style='color: #3498db; font-weight: bold;'>🔍 Search Google News</a></td>
     </tr>
     <tr>
-      <td>AAPL</td>
-      <td>266.66$</td>
+      <td><b>AAPL</b></td>
+      <td>266.52$</td>
       <td>BULLISH</td>
       <td>Near MA50</td>
       <td>0.44</td>
       <td></td>
-      <td>No News</td>
+      <td><a href='https://www.google.com/search?q=AAPL+stock+news&tbm=nws' target='_blank' style='color: #3498db; font-weight: bold;'>🔍 Search Google News</a></td>
     </tr>
     <tr>
-      <td>META</td>
-      <td>637.70$</td>
+      <td><b>META</b></td>
+      <td>636.98$</td>
       <td>BULLISH</td>
       <td>Near MA50</td>
       <td>0.34</td>
-      <td>Sale at price 630.68 - 632.49 per share.</td>
-      <td>No News</td>
+      <td><span style='color: #e74c3c;'>🔴 Sale at price 630.68 - 632.49 per share.</span></td>
+      <td><a href='https://www.google.com/search?q=META+stock+news&tbm=nws' target='_blank' style='color: #3498db; font-weight: bold;'>🔍 Search Google News</a></td>
     </tr>
   </tbody>
 </table>
