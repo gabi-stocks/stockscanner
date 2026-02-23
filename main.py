@@ -1,24 +1,21 @@
 import yfinance as yf
 import pandas as pd
 import time
+import requests
 
 def get_detailed_info(ticker):
     """מושך חדשות מגוגל ונתוני אינסיידרים עם צבעים"""
     try:
         stock = yf.Ticker(ticker)
-        
-        # יצירת קישור ישיר לגוגל ניוז - הכי אמין
         google_news_link = f"https://www.google.com/search?q={ticker}+stock+news&tbm=nws"
         news_html = f"<a href='{google_news_link}' target='_blank' style='color: #3498db; font-weight: bold;'>🔍 Search Google News</a>"
         
-        # משיכת עסקאות אינסיידרים
         insider = stock.insider_transactions
         ins_val = "No Recent Data"
         
         if insider is not None and not insider.empty:
             first_row = insider.iloc[0]
             text = first_row.get('Text', 'Transaction Reported')
-            # צביעת טקסט: ירוק לקנייה, אדום למכירה
             if "Purchase" in text or "Buy" in text:
                 ins_val = f"<span style='color: #27ae60; font-weight: bold;'>🟢 {text}</span>"
             elif "Sale" in text or "Sell" in text:
@@ -31,24 +28,34 @@ def get_detailed_info(ticker):
         return "No News", "No Data"
 
 def run_scanner():
-    print("Fetching S&P 500 list from Wikipedia...")
+    print("Fetching S&P 500 list from a reliable source...")
     try:
-        table = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
-        tickers = table[0]['Symbol'].tolist()
+        # שימוש במקור חלופי ואמין יותר מוויקיפדיה עבור GitHub Actions
+        url = "https://raw.githubusercontent.com/datasets/s-and-p-500-companies/master/data/constituents.csv"
+        df_sp = pd.read_csv(url)
+        tickers = df_sp['Symbol'].tolist()
         tickers = [t.replace('.', '-') for t in tickers]
     except Exception as e:
-        print(f"Failed to fetch list: {e}")
-        tickers = ["AAPL", "MSFT", "NVDA", "TSLA", "GOOGL", "AMZN", "META"]
+        print(f"Failed to fetch from primary source: {e}")
+        # ניסיון שני מוויקיפדיה אם הראשון נכשל
+        try:
+            table = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
+            tickers = table[0]['Symbol'].tolist()
+            tickers = [t.replace('.', '-') for t in tickers]
+        except:
+            # אם הכל נכשל - רשימה מורחבת כגיבוי אחרון
+            tickers = ["AAPL", "MSFT", "NVDA", "TSLA", "GOOGL", "AMZN", "META", "AMD", "INTC", "NFLX", "DIS", "BA", "V", "MA"]
 
     results = []
     total = len(tickers)
-    print(f"Starting scan for {total} stocks...")
+    print(f"Starting scan for {total} stocks. This will take a few minutes...")
     
     for i, ticker in enumerate(tickers):
         try:
             if i % 50 == 0: print(f"Progress: {i}/{total} stocks scanned...")
             
-            df = yf.download(ticker, period="2y", progress=False, interval="1d")
+            # הורדת נתונים (שנתיים אחורה)
+            df = yf.download(ticker, period="2y", progress=False, interval="1d", timeout=10)
             
             if df.empty or len(df) < 151:
                 continue
@@ -68,7 +75,7 @@ def run_scanner():
             avg_vol = df['Volume'].rolling(window=20).mean().iloc[-1]
             rvol = float(df['Volume'].iloc[-1] / avg_vol) if avg_vol != 0 else 0
             
-            # ביצועים ל-6 חודשים
+            # ביצועים ל-6 חודשים (Recovery check)
             p_6m = float(df['Close'].iloc[-126])
             perf_6m = ((price - p_6m) / p_6m) * 100
             
@@ -87,6 +94,7 @@ def run_scanner():
                     "Insider Activity": insider_info,
                     "Market News": news_btn
                 })
+                # השהיה קלה למניעת חסימה
                 time.sleep(0.1)
                 
         except Exception as e:
@@ -100,7 +108,7 @@ def run_scanner():
         <html>
         <head>
             <meta charset="UTF-8">
-            <title>Advanced Stock Scanner</title>
+            <title>Advanced S&P 500 Scanner</title>
             <style>
                 body {{ font-family: 'Segoe UI', Arial, sans-serif; margin: 30px; background-color: #f0f2f5; color: #1c1e21; }}
                 h1 {{ color: #1a73e8; text-align: center; font-size: 2.5em; }}
@@ -115,7 +123,7 @@ def run_scanner():
             </style>
         </head>
         <body>
-            <h1>📈 Smart Stock Scanner (S&P 500)</h1>
+            <h1>📈 Smart Stock Scanner (S&P 500 Full)</h1>
             <p class="timestamp">Scan generated at: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M')} (UTC)</p>
             {df_final.to_html(escape=False, index=False)}
         </body>
