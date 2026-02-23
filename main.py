@@ -3,18 +3,17 @@ import pandas as pd
 import time
 
 def get_detailed_info(ticker):
-    """מושך חדשות ונתוני עסקאות בעלי עניין"""
     try:
         stock = yf.Ticker(ticker)
-        # משיכת 2 חדשות אחרונות
-        news = stock.news[:2]
+        news = stock.news[:3] # נמשוך 3 כתבות כדי להגדיל סיכוי לקישור טוב
         news_links = []
         for n in news:
             title = n.get('title', 'News')
-            link = n.get('link', '#')
-            news_links.append(f"• <a href='{link}' target='_blank'>{title}</a>")
+            link = n.get('link', '')
+            # בדיקה שהקישור הוא באמת קישור חיצוני
+            if link.startswith('http'):
+                news_links.append(f"• <a href='{link}' target='_blank' rel='noopener noreferrer'>{title}</a>")
         
-        # משיכת עסקאות אינסיידרים
         insider = stock.insider_transactions
         ins_val = "No Recent Data"
         if insider is not None and not insider.empty:
@@ -23,6 +22,7 @@ def get_detailed_info(ticker):
         return "<br>".join(news_links) if news_links else "No News", ins_val
     except:
         return "No News", "No Data"
+        
 
 def run_scanner():
     print("Fetching S&P 500 list from Wikipedia...")
