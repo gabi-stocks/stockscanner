@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # חשוב כדי לאפשר סנכרון מלא של היסטוריית הקבצים
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,14 +30,23 @@ jobs:
       - name: Run scanner
         run: python main.py
 
-      - name: Sync and Commit
+      - name: Commit and Push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          # משיכת שינויים למניעת שגיאת Rejected
+          
+          # שלב 1: נסיגה זמנית מהשינויים כדי לאפשר Pull נקי
+          git stash 
+          
+          # שלב 2: סנכרון מול השרת
           git pull --rebase origin main
-          git commit -m "Automated stock scan update" || echo "No changes"
+          
+          # שלב 3: החזרת הקובץ index.html החדש שיצרנו
+          git stash pop || echo "No changes to pop"
+          
+          # שלב 4: ביצוע ה-Commit וה-Push
+          git add index.html
+          git commit -m "Automated stock scan update" || echo "No changes to commit"
           git push origin main
 
       - name: Upload artifact
