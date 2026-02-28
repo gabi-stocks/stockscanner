@@ -1,11 +1,10 @@
 name: Master Stock Scan
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 20 * * *'
-  workflow_dispatch:
 
-# הרשאות הכרחיות לפרסום האתר
 permissions:
   contents: write
   pages: write
@@ -13,12 +12,9 @@ permissions:
 
 jobs:
   build_and_deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps: deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -32,14 +28,10 @@ jobs:
       - name: Run scanner
         run: python main.py
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.' # מעלה את התיקייה שבה נמצא index.html
+          path: '.'
 
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v4
