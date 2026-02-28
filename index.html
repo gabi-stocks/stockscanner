@@ -1,97 +1,92 @@
-<html><body><h1>Scanner Update: 2026-02-28 11:38:57.872765</h1><table border="1" class="dataframe">
+
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Stock Master Scanner</title>
+        <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; }
+            .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+            h1 { color: #1a73e8; text-align: center; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th { background: #1a73e8; color: white; padding: 12px; text-align: left; }
+            td { padding: 12px; border-bottom: 1px solid #eee; }
+            tr:hover { background: #f8f9fa; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>📈 Real-Time Stock Scanner</h1>
+            <p style="text-align:center; color:#666;">Last Update: 2026-02-28 12:30:03 (UTC)</p>
+            <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th></th>
       <th>Ticker</th>
       <th>Price</th>
-      <th>Dist_MA50</th>
-      <th>Time</th>
+      <th>Status</th>
+      <th>Condition</th>
+      <th>RVOL</th>
+      <th>Insider</th>
+      <th>Market News</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>AAPL</td>
-      <td>264.18$</td>
-      <td>0.4%</td>
-      <td>11:38:56</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>NVDA</td>
+      <td><b>NVDA</b></td>
       <td>177.19$</td>
-      <td>4.5%</td>
-      <td>11:38:56</td>
+      <td>BULLISH</td>
+      <td>Near MA50</td>
+      <td><b style='color:#27ae60;'>1.58 🔥</b></td>
+      <td><span style='color:#e74c3c;'>🔴 Sell</span></td>
+      <td><a href='https://www.google.com/search?q=NVDA+stock+news&tbm=nws' target='_blank' style='text-decoration:none;'>🔍 News</a></td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>TSLA</td>
-      <td>402.51$</td>
-      <td>7.7%</td>
-      <td>11:38:56</td>
+      <td><b>AAPL</b></td>
+      <td>264.18$</td>
+      <td>BULLISH</td>
+      <td>Near MA50</td>
+      <td>1.34</td>
+      <td>Stock Gift at price</td>
+      <td><a href='https://www.google.com/search?q=AAPL+stock+news&tbm=nws' target='_blank' style='text-decoration:none;'>🔍 News</a></td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>MSFT</td>
-      <td>392.74$</td>
-      <td>11.6%</td>
-      <td>11:38:56</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>GOOGL</td>
-      <td>311.76$</td>
-      <td>2.6%</td>
-      <td>11:38:56</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>AMZN</td>
-      <td>210.00$</td>
-      <td>7.3%</td>
-      <td>11:38:56</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>META</td>
+      <td><b>META</b></td>
       <td>648.18$</td>
-      <td>1.3%</td>
-      <td>11:38:57</td>
+      <td>BULLISH</td>
+      <td>Near MA50</td>
+      <td>1.12</td>
+      <td><span style='color:#e74c3c;'>🔴 Sell</span></td>
+      <td><a href='https://www.google.com/search?q=META+stock+news&tbm=nws' target='_blank' style='text-decoration:none;'>🔍 News</a></td>
     </tr>
     <tr>
-      <th>7</th>
-      <td>AMD</td>
+      <td><b>GOOGL</b></td>
+      <td>311.76$</td>
+      <td>BULLISH</td>
+      <td>Near MA50</td>
+      <td>1.06</td>
+      <td><span style='color:#e74c3c;'>🔴 Sell</span></td>
+      <td><a href='https://www.google.com/search?q=GOOGL+stock+news&tbm=nws' target='_blank' style='text-decoration:none;'>🔍 News</a></td>
+    </tr>
+    <tr>
+      <td><b>TSLA</b></td>
+      <td>402.51$</td>
+      <td>BULLISH</td>
+      <td>Near MA150</td>
+      <td>0.94</td>
+      <td><span style='color:#e74c3c;'>🔴 Sell</span></td>
+      <td><a href='https://www.google.com/search?q=TSLA+stock+news&tbm=nws' target='_blank' style='text-decoration:none;'>🔍 News</a></td>
+    </tr>
+    <tr>
+      <td><b>AMD</b></td>
       <td>200.21$</td>
-      <td>8.4%</td>
-      <td>11:38:57</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>NFLX</td>
-      <td>96.24$</td>
-      <td>11.5%</td>
-      <td>11:38:57</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>DIS</td>
-      <td>106.04$</td>
-      <td>3.7%</td>
-      <td>11:38:57</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>PYPL</td>
-      <td>46.21$</td>
-      <td>11.3%</td>
-      <td>11:38:57</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>INTC</td>
-      <td>45.61$</td>
-      <td>3.1%</td>
-      <td>11:38:57</td>
+      <td>BULLISH</td>
+      <td>Near MA150</td>
+      <td>0.73</td>
+      <td>Stock Gift at price</td>
+      <td><a href='https://www.google.com/search?q=AMD+stock+news&tbm=nws' target='_blank' style='text-decoration:none;'>🔍 News</a></td>
     </tr>
   </tbody>
-</table></body></html>
+</table>
+        </div>
+    </body>
+    </html>
+    
