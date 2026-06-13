@@ -801,6 +801,7 @@
     const items = loadItems();
     items.unshift({ name, who, category, done: false, ts: Date.now() });
     saveItems(items);
+    renderCatalog();
     renderList();
     if (!nameOverride) {
       nameEl.value = "";
@@ -821,18 +822,21 @@
     const items = loadItems();
     items.splice(idx, 1);
     saveItems(items);
+    renderCatalog();
     renderList();
   }
 
   function clearDone() {
     const items = loadItems().filter(i => !i.done);
     saveItems(items);
+    renderCatalog();
     renderList();
   }
 
   function clearAll() {
     saveItems([]);
     activeCategory = "כלל";
+    renderCatalog();
     renderList();
   }
 
