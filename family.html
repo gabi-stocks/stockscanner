@@ -359,6 +359,22 @@
     }
     .catalog-chip:hover { background: #eef2ff; border-color: #667eea; }
     .catalog-chip small { display: block; color: #888; margin-top: 2px; font-size: 0.68rem; }
+    .catalog-chip-wrap { position: relative; }
+    .quick-remove-btn {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      width: 22px;
+      height: 22px;
+      border: none;
+      border-radius: 999px;
+      background: #fff1f2;
+      color: #e11d48;
+      cursor: pointer;
+      font-size: 0.75rem;
+      line-height: 1;
+      box-shadow: 0 2px 8px rgba(225,29,72,0.15);
+    }
 
     .summary-box {
       background: #f7f8fc;
@@ -427,7 +443,11 @@
   </div>
 
   <div class="catalog-card">
-    <h2>🧺 מוצרים מהירים</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px;">
+      <h2 style="margin-bottom:0;">🧺 מוצרים מהירים</h2>
+      <button id="toggle-quick-delete-btn" type="button" onclick="toggleQuickDeleteMode()" style="padding:8px 10px; border:1px solid #e0e0e0; border-radius:10px; background:#fff; color:#555; cursor:pointer; font-size:0.82rem;">🗑️ מחק מוצרים מהירים</button>
+    </div>
+    <div id="quick-delete-hint" style="color:#888; font-size:0.78rem; margin-bottom:8px;">לחץ על הכפתור כדי להסיר מוצרים מהקטלוג.</div>
     <div class="catalog-grid" id="catalog-grid"></div>
   </div>
 
@@ -469,6 +489,7 @@
     { name: "סבון כלים", category: "מוצרי ניקיון" },
     { name: "נייר טואלט", category: "מוצרי ניקיון" }
   ];
+  let quickDeleteMode = false;
 
   const HEBREW_DAYS = ["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
   const HEBREW_MONTHS = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני",
@@ -658,26 +679,91 @@
     }
   }
 
+  function loadQuickProducts() {
+    const saved = localStorage.getItem("family_quick_products");
+    if (saved === null) return PRODUCT_CATALOG.map(item => ({ ...item }));
+    try {
+      const items = JSON.parse(saved);
+      if (!Array.isArray(items)) return PRODUCT_CATALOG.map(item => ({ ...item }));
+      return items.map(item => ({ name: item.name, category: item.category || "אחר" }));
+    } catch {
+      return PRODUCT_CATALOG.map(item => ({ ...item }));
+    }
+  }
+
+  function saveQuickProducts(products) {
+    localStorage.setItem("family_quick_products", JSON.stringify(products));
+  }
+
+  function addQuickProduct(name, category) {
+    const cleanName = (name || "").trim();
+    if (!cleanName) return;
+    const products = loadQuickProducts();
+    const existing = products.find(item => item.name.toLowerCase() === cleanName.toLowerCase());
+    if (existing) {
+      existing.category = category || existing.category || "אחר";
+      saveQuickProducts(products);
+      return;
+    }
+    products.unshift({ name: cleanName, category: category || "אחר" });
+    saveQuickProducts(products);
+  }
+
+  function removeQuickProduct(name) {
+    const products = loadQuickProducts().filter(item => item.name.toLowerCase() !== (name || "").toLowerCase());
+    saveQuickProducts(products);
+    renderCatalog();
+  }
+
+  function toggleQuickDeleteMode() {
+    quickDeleteMode = !quickDeleteMode;
+    document.getElementById("quick-delete-hint").textContent = quickDeleteMode
+      ? "לחץ על ✕ ליד מוצר כדי למחוק אותו מהקטלוג"
+      : "לחץ על הכפתור כדי להסיר מוצרים מהקטלוג.";
+    renderCatalog();
+  }
+
   function saveItems(items) {
     localStorage.setItem("family_shopping", JSON.stringify(items));
   }
 
   function renderCatalog() {
     const grid = document.getElementById("catalog-grid");
-    const previousItems = loadItems();
-    const quickItems = [...new Map([
-      ...PRODUCT_CATALOG.map(item => [item.name, item]),
-      ...previousItems.map(item => [item.name, { name: item.name, category: item.category || "אחר" }])
-    ].map(entry => entry)).values()];
+    const quickItems = loadQuickProducts();
 
     grid.innerHTML = "";
     quickItems.forEach(product => {
+      const wrap = document.createElement("div");
+      wrap.className = "catalog-chip-wrap";
+
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "catalog-chip";
       btn.innerHTML = `<strong>${escHtml(product.name)}</strong><small>${escHtml(product.category)}</small>`;
-      btn.onclick = () => addQuickItem(product);
-      grid.appendChild(btn);
+      btn.onclick = () => {
+        if (quickDeleteMode) {
+          removeQuickProduct(product.name);
+          return;
+        }
+        addQuickItem(product);
+      };
+
+      wrap.appendChild(btn);
+
+      if (quickDeleteMode) {
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "quick-remove-btn";
+        removeBtn.textContent = "✕";
+        removeBtn.title = `מחק ${product.name}`;
+        removeBtn.onclick = e => {
+          e.stopPropagation();
+          removeQuickProduct(product.name);
+        };
+        wrap.appendChild(removeBtn);
+      }
+
+      grid.appendChild(wrap);
     });
   }
 
@@ -801,6 +887,7 @@
     const items = loadItems();
     items.unshift({ name, who, category, done: false, ts: Date.now() });
     saveItems(items);
+    addQuickProduct(name, category);
     renderCatalog();
     renderList();
     if (!nameOverride) {
