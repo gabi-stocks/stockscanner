@@ -271,8 +271,8 @@
     .list-item.done .check-btn { background: #667eea; border-color: #667eea; }
 
     .item-info { flex: 1; }
-    .item-name { font-size: 1rem; color: #333; font-weight: 500; }
-    .item-who  { font-size: 0.8rem; color: #999; margin-top: 2px; }
+    .item-name { font-size: 0.92rem; color: #333; font-weight: 500; }
+    .item-who  { font-size: 0.75rem; color: #999; margin-top: 2px; }
 
     .delete-btn {
       padding: 6px 12px;
@@ -317,15 +317,15 @@
       border: 1px solid #e8ecff;
       border-radius: 12px;
       background: #f7f8ff;
-      padding: 8px;
+      padding: 7px;
       cursor: pointer;
       text-align: right;
       color: #444;
       transition: all 0.2s;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
     }
     .catalog-chip:hover { background: #eef2ff; border-color: #667eea; }
-    .catalog-chip small { display: block; color: #888; margin-top: 3px; font-size: 0.72rem; }
+    .catalog-chip small { display: block; color: #888; margin-top: 2px; font-size: 0.68rem; }
 
     .summary-box {
       background: #f7f8fc;
@@ -513,7 +513,14 @@
     document.getElementById("login-screen").style.display = "block";
     document.getElementById("password-input").value = "";
     document.getElementById("login-error").textContent = "";
+    document.getElementById("send-email-btn").style.display = "none";
   }
+
+  document.getElementById("name-select").addEventListener("change", () => {
+    const member = document.getElementById("name-select").value || "";
+    sessionStorage.setItem("family_member", member);
+    updateMailButton();
+  });
 
   document.getElementById("password-input").addEventListener("keydown", e => {
     if (e.key === "Enter") login();
@@ -721,12 +728,17 @@
     window.location.href = `mailto:gabidorip@gmail.com?subject=${subject}&body=${body}`;
   }
 
+  function updateMailButton() {
+    const member = getCurrentMember().trim();
+    document.getElementById("send-email-btn").style.display = (member === "גבי") ? "inline-flex" : "none";
+  }
+
   function init() {
     renderWeek();
     renderCatalog();
     renderList();
     document.getElementById("current-user-label").textContent = `נבחר כעת: ${getCurrentMember()}`;
-    document.getElementById("send-email-btn").style.display = (getCurrentMember() === "גבי") ? "inline-flex" : "none";
+    updateMailButton();
   }
 </script>
 </body>
