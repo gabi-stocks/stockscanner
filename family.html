@@ -607,18 +607,20 @@
     if (e.key === "Enter") addFamilyName();
   });
 
+  function refreshSharedState() {
+    renderCatalog();
+    renderList();
+    updateMailButton();
+  }
+
   window.addEventListener("storage", event => {
-    if (event.key === "family_shopping") {
-      renderCatalog();
-      renderList();
-      updateMailButton();
+    if (event.key === "family_shopping" || event.key === "family_quick_products") {
+      refreshSharedState();
     }
   });
 
   window.addEventListener("focus", () => {
-    renderCatalog();
-    renderList();
-    updateMailButton();
+    refreshSharedState();
   });
 
   renderFamilyNames();
