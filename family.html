@@ -182,6 +182,31 @@
 
     .shopping-card h2 { color: #333; font-size: 1.2rem; margin-bottom: 20px; }
 
+    .category-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .category-tab {
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      background: #f8fafc;
+      color: #475569;
+      padding: 7px 10px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      transition: all 0.2s;
+    }
+
+    .category-tab.active {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(102,126,234,0.25);
+    }
+
     .add-form {
       display: flex;
       gap: 10px;
@@ -271,8 +296,16 @@
     .list-item.done .check-btn { background: #667eea; border-color: #667eea; }
 
     .item-info { flex: 1; }
-    .item-name { font-size: 0.92rem; color: #333; font-weight: 500; }
-    .item-who  { font-size: 0.75rem; color: #999; margin-top: 2px; }
+    .item-name { font-size: 0.86rem; color: #333; font-weight: 500; }
+    .item-who  { font-size: 0.72rem; color: #999; margin-top: 2px; }
+
+    .list-group { margin-bottom: 12px; }
+    .list-group-title {
+      font-size: 0.78rem;
+      color: #667eea;
+      font-weight: 700;
+      margin: 0 2px 8px;
+    }
 
     .delete-btn {
       padding: 6px 12px;
@@ -411,10 +444,12 @@
       <input type="text" id="who-input"  placeholder="מי ביקש?" maxlength="30">
       <button id="add-btn" onclick="addItem()">+ הוסף</button>
     </div>
+    <div class="category-tabs" id="category-tabs"></div>
     <ul id="shopping-list"></ul>
     <div class="list-footer">
       <span id="list-count"></span>
       <button id="clear-done-btn" onclick="clearDone()">מחק שנקנו ✓</button>
+      <button id="clear-all-btn" onclick="clearAll()" style="padding:8px 14px; background:none; border:1px solid #e0e0e0; border-radius:10px; color:#666; font-size:0.82rem; cursor:pointer;">נקה הכל</button>
     </div>
   </div>
 
@@ -441,6 +476,8 @@
   const HEBREW_DAYS = ["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
   const HEBREW_MONTHS = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני",
                           "יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
+  const CATEGORY_ORDER = ["פירות וירקות", "מוצרי חלב", "מוצרי ניקיון", "מוצרי שגרה", "אחר"];
+  let activeCategory = "כלל";
 
   // ─── AUTH ─────────────────────────────────────────────────
   function loadFamilyNames() {
@@ -619,10 +656,35 @@
     }
   }
 
+  function renderCategoryTabs(items) {
+    const tabs = document.getElementById("category-tabs");
+    tabs.innerHTML = "";
+
+    const categories = ["כלל", ...new Set(items.map(item => item.category || "אחר"))];
+    categories.sort((a, b) => (a === "כלל" ? -1 : b === "כלל" ? 1 : CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b)));
+
+    categories.forEach(name => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "category-tab" + (activeCategory === name ? " active" : "");
+      btn.textContent = name === "כלל" ? "הכל" : name;
+      btn.onclick = () => {
+        activeCategory = name;
+        renderList();
+      };
+      tabs.appendChild(btn);
+    });
+  }
+
   function renderList() {
     const items = loadItems();
     const ul = document.getElementById("shopping-list");
+    const visibleItems = activeCategory === "כלל"
+      ? items
+      : items.filter(item => (item.category || "אחר") === activeCategory);
+
     ul.innerHTML = "";
+    renderCategoryTabs(items);
 
     if (items.length === 0) {
       ul.innerHTML = '<div class="list-empty"><span>🛍️</span>הרשימה ריקה – הוסף פריטים!</div>';
@@ -630,26 +692,44 @@
       return;
     }
 
-    items.forEach((item, idx) => {
-      const li = document.createElement("li");
-      li.className = "list-item" + (item.done ? " done" : "");
-      li.innerHTML = `
-        <button class="check-btn" onclick="toggleDone(${idx})" title="סמן כנקנה">
-          ${item.done ? "✓" : ""}
-        </button>
-        <div class="item-info">
-          <div class="item-name">${escHtml(item.name)}</div>
-          ${item.who ? `<div class="item-who">ביקש/ה: ${escHtml(item.who)}</div>` : ""}
-        </div>
-        <button class="delete-btn" onclick="deleteItem(${idx})" title="מחק">✕</button>
-      `;
-      ul.appendChild(li);
+    if (visibleItems.length === 0) {
+      ul.innerHTML = '<div class="list-empty"><span>🧺</span>אין פריטים בקטגוריה זו כרגע.</div>';
+      document.getElementById("list-count").textContent = `${items.filter(i => i.done).length}/${items.length} פריטים נקנו`;
+      renderSummary(items);
+      return;
+    }
+
+    const grouped = visibleItems.reduce((acc, item) => {
+      const key = item.category || "אחר";
+      (acc[key] ||= []).push(item);
+      return acc;
+    }, {});
+
+    Object.keys(grouped).sort((a, b) => CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b)).forEach(category => {
+      const group = document.createElement("li");
+      group.className = "list-group";
+      group.innerHTML = `<div class="list-group-title">${escHtml(category)}</div>`;
+      const itemsInGroup = grouped[category];
+      itemsInGroup.forEach((item, idxInGroup) => {
+        const realIndex = items.indexOf(item);
+        const li = document.createElement("li");
+        li.className = "list-item" + (item.done ? " done" : "");
+        li.innerHTML = `
+          <button class="check-btn" onclick="toggleDone(${realIndex})" title="סמן כנקנה">${item.done ? "✓" : ""}</button>
+          <div class="item-info">
+            <div class="item-name">${escHtml(item.name)}</div>
+            ${item.who ? `<div class="item-who">ביקש/ה: ${escHtml(item.who)}</div>` : ""}
+          </div>
+          <button class="delete-btn" onclick="deleteItem(${realIndex})" title="מחק">✕</button>
+        `;
+        group.appendChild(li);
+      });
+      ul.appendChild(group);
     });
 
     const done  = items.filter(i => i.done).length;
     const total = items.length;
-    document.getElementById("list-count").textContent =
-      `${done}/${total} פריטים נקנו`;
+    document.getElementById("list-count").textContent = `${done}/${total} פריטים נקנו`;
     renderSummary(items);
   }
 
@@ -703,6 +783,12 @@
   function clearDone() {
     const items = loadItems().filter(i => !i.done);
     saveItems(items);
+    renderList();
+  }
+
+  function clearAll() {
+    saveItems([]);
+    activeCategory = "כלל";
     renderList();
   }
 
