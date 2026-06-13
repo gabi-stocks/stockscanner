@@ -636,8 +636,12 @@
 
   // ─── SHOPPING LIST ────────────────────────────────────────
   function loadItems() {
-    try { return JSON.parse(localStorage.getItem("family_shopping") || "[]"); }
-    catch { return []; }
+    try {
+      const items = JSON.parse(localStorage.getItem("family_shopping") || "[]");
+      return Array.isArray(items) ? items : [];
+    } catch {
+      return [];
+    }
   }
 
   function saveItems(items) {
