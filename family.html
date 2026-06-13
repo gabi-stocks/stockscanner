@@ -397,6 +397,7 @@
   <h1>שלום משפחה!</h1>
   <p>הכנס סיסמה ובחר שם כדי להמשיך</p>
   <select id="name-select" aria-label="בחר שם"></select>
+  <div id="family-name-chips" style="margin:8px 0 10px; text-align:right;"></div>
   <input type="password" id="password-input" placeholder="סיסמה" maxlength="20" autocomplete="current-password">
   <input type="text" id="new-name-input" placeholder="הוסף שם חדש" maxlength="30">
   <button id="add-name-btn" type="button" onclick="addFamilyName()">+ הוסף שם</button>
@@ -453,16 +454,12 @@
     </div>
   </div>
 
-  <div class="summary-card">
-    <h2>📊 סיכום לפי קטגוריה</h2>
-    <div class="summary-grid" id="summary-grid"></div>
-  </div>
 
 </div>
 
 <script>
   // ─── CONFIG ──────────────────────────────────────────────
-  const PASSWORD = "DORI";
+  const PASSWORD = "dori";
 
   const PRODUCT_CATALOG = [
     { name: "תפוחים", category: "פירות וירקות" },
@@ -505,6 +502,19 @@
     });
     const current = sessionStorage.getItem("family_member") || "";
     if (current && [...select.options].some(o => o.value === current)) select.value = current;
+
+    const chips = document.getElementById("family-name-chips");
+    if (chips) {
+      chips.innerHTML = "";
+      names.forEach(name => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.textContent = `✕ ${name}`;
+        chip.style.cssText = "margin:4px 0; width:100%; padding:8px 10px; border:1px solid #e0e0e0; border-radius:10px; background:#fff; color:#555; cursor:pointer; text-align:right; font-size:0.85rem;";
+        chip.onclick = () => removeFamilyName(name);
+        chips.appendChild(chip);
+      });
+    }
   }
 
   function addFamilyName() {
@@ -517,6 +527,16 @@
     document.getElementById("name-select").value = name;
     input.value = "";
     input.focus();
+  }
+
+  function removeFamilyName(nameToRemove) {
+    const names = loadFamilyNames().filter(name => name !== nameToRemove);
+    if (names.length === 0) {
+      saveFamilyNames(["אבא", "אמא", "ילד"]);
+    } else {
+      saveFamilyNames(names);
+    }
+    renderFamilyNames();
   }
 
   function getCurrentMember() {
@@ -626,8 +646,14 @@
 
   function renderCatalog() {
     const grid = document.getElementById("catalog-grid");
+    const previousItems = loadItems();
+    const quickItems = [...new Map([
+      ...PRODUCT_CATALOG.map(item => [item.name, item]),
+      ...previousItems.map(item => [item.name, { name: item.name, category: item.category || "אחר" }])
+    ].map(entry => entry)).values()];
+
     grid.innerHTML = "";
-    PRODUCT_CATALOG.forEach(product => {
+    quickItems.forEach(product => {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "catalog-chip";
