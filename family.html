@@ -431,6 +431,7 @@
       <p id="current-user-label" style="color:#667eea; margin-top:6px; font-size:0.85rem;"></p>
     </div>
     <div style="display:flex; align-items:center; gap:8px;">
+      <button id="share-link-btn" type="button" onclick="createShareLink()" style="padding:8px 12px; border:none; border-radius:10px; background:#ecfdf5; color:#047857; cursor:pointer; font-size:0.82rem;">🔗 קישור שיתוף</button>
       <button id="send-email-btn" type="button" onclick="sendShoppingList()" style="display:none; padding:8px 12px; border:none; border-radius:10px; background:#eef2ff; color:#4f46e5; cursor:pointer; font-size:0.82rem;">📧 שלח למייל</button>
       <button id="logout-btn" onclick="logout()">יציאה</button>
     </div>
@@ -497,6 +498,7 @@
   const CATEGORY_ORDER = ["פירות וירקות", "מוצרי חלב", "מוצרי ניקיון", "מוצרי שגרה", "אחר"];
   let activeCategory = "כלל";
   const syncChannel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel("family-shopping-sync") : null;
+  const SHARE_API = "https://jsonblob.com/api/jsonBlob";
 
   // ─── AUTH ─────────────────────────────────────────────────
   function loadFamilyNames() {
@@ -710,6 +712,7 @@
     localStorage.setItem("family_quick_products", JSON.stringify(products));
     localStorage.setItem("family_quick_ts", String(Date.now()));
     if (syncChannel) syncChannel.postMessage({ type: "quick" });
+    syncToRemote();
     setTimeout(() => refreshSharedState(), 50);
   }
 
@@ -741,10 +744,80 @@
     renderCatalog();
   }
 
+  function getShareUrl() {
+    const fromQuery = new URLSearchParams(window.location.search).get("share");
+    if (fromQuery) return fromQuery;
+    return localStorage.getItem("family_share_url") || "";
+  }
+
+  function setShareUrl(url) {
+    if (!url) return;
+    localStorage.setItem("family_share_url", url);
+    const next = new URL(window.location.href);
+    next.searchParams.set("share", url);
+    history.replaceState({}, "", next.toString());
+  }
+
+  async function syncToRemote() {
+    const shareUrl = getShareUrl();
+    if (!shareUrl) return;
+    try {
+      await fetch(shareUrl, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: loadItems(),
+          quickProducts: loadQuickProducts(),
+          updatedAt: Date.now()
+        })
+      });
+    } catch (e) {}
+  }
+
+  async function syncFromRemote() {
+    const shareUrl = getShareUrl();
+    if (!shareUrl) return false;
+    try {
+      const res = await fetch(shareUrl);
+      if (!res.ok) return false;
+      const data = await res.json();
+      if (Array.isArray(data.items)) localStorage.setItem("family_shopping", JSON.stringify(data.items));
+      if (Array.isArray(data.quickProducts)) localStorage.setItem("family_quick_products", JSON.stringify(data.quickProducts));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async function createShareLink() {
+    try {
+      const res = await fetch(SHARE_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: loadItems(),
+          quickProducts: loadQuickProducts(),
+          updatedAt: Date.now()
+        })
+      });
+      const url = res.headers.get("Location") || (await res.text());
+      if (url) {
+        const finalUrl = url.startsWith("http") ? url : `${SHARE_API}/${url}`;
+        setShareUrl(finalUrl);
+        await syncToRemote();
+        refreshSharedState();
+        navigator.clipboard?.writeText(finalUrl).then(() => alert("הקישור הועתק! פתח אותו גם במכשיר אחר כדי לראות את אותה רשימה."));
+      }
+    } catch (e) {
+      alert("לא הצלחנו ליצור קישור שיתוף כרגע.");
+    }
+  }
+
   function saveItems(items) {
     localStorage.setItem("family_shopping", JSON.stringify(items));
     localStorage.setItem("family_shopping_ts", String(Date.now()));
     if (syncChannel) syncChannel.postMessage({ type: "items" });
+    syncToRemote();
     setTimeout(() => refreshSharedState(), 50);
   }
 
@@ -975,8 +1048,9 @@
     document.getElementById("send-email-btn").style.display = (member === "גבי") ? "inline-flex" : "none";
   }
 
-  function init() {
+  async function init() {
     renderWeek();
+    if (getShareUrl()) await syncFromRemote();
     refreshSharedState();
     document.getElementById("current-user-label").textContent = `נבחר כעת: ${getCurrentMember()}`;
     updateMailButton();
