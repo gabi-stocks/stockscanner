@@ -364,8 +364,11 @@
   <h1>שלום משפחה!</h1>
   <p>הכנס סיסמה ובחר שם כדי להמשיך</p>
   <select id="name-select" aria-label="בחר שם"></select>
+  <input type="password" id="password-input" placeholder="סיסמה" maxlength="20" autocomplete="current-password">
   <input type="text" id="new-name-input" placeholder="הוסף שם חדש" maxlength="30">
   <button id="add-name-btn" type="button" onclick="addFamilyName()">+ הוסף שם</button>
+  <button id="login-btn" type="button" onclick="login()">כניסה</button>
+  <div id="login-error" aria-live="polite"></div>
 </div>
 
 <!-- ===== APP ===== -->
@@ -517,6 +520,9 @@
 
   document.getElementById("password-input").addEventListener("keydown", e => {
     if (e.key === "Enter") login();
+  });
+  document.getElementById("new-name-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") addFamilyName();
   });
 
   renderFamilyNames();
