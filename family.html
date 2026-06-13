@@ -586,6 +586,20 @@
     if (e.key === "Enter") addFamilyName();
   });
 
+  window.addEventListener("storage", event => {
+    if (event.key === "family_shopping") {
+      renderCatalog();
+      renderList();
+      updateMailButton();
+    }
+  });
+
+  window.addEventListener("focus", () => {
+    renderCatalog();
+    renderList();
+    updateMailButton();
+  });
+
   renderFamilyNames();
 
   // Auto-login if already authenticated in this session
