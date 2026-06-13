@@ -708,7 +708,9 @@
 
   function saveQuickProducts(products) {
     localStorage.setItem("family_quick_products", JSON.stringify(products));
+    localStorage.setItem("family_quick_ts", String(Date.now()));
     if (syncChannel) syncChannel.postMessage({ type: "quick" });
+    setTimeout(() => refreshSharedState(), 50);
   }
 
   function addQuickProduct(name, category) {
@@ -741,7 +743,9 @@
 
   function saveItems(items) {
     localStorage.setItem("family_shopping", JSON.stringify(items));
+    localStorage.setItem("family_shopping_ts", String(Date.now()));
     if (syncChannel) syncChannel.postMessage({ type: "items" });
+    setTimeout(() => refreshSharedState(), 50);
   }
 
   function renderCatalog() {
@@ -973,10 +977,10 @@
 
   function init() {
     renderWeek();
-    renderCatalog();
-    renderList();
+    refreshSharedState();
     document.getElementById("current-user-label").textContent = `נבחר כעת: ${getCurrentMember()}`;
     updateMailButton();
+    setTimeout(() => refreshSharedState(), 100);
   }
 </script>
 </body>
