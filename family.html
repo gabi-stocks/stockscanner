@@ -496,6 +496,7 @@
                           "יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
   const CATEGORY_ORDER = ["פירות וירקות", "מוצרי חלב", "מוצרי ניקיון", "מוצרי שגרה", "אחר"];
   let activeCategory = "כלל";
+  const syncChannel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel("family-shopping-sync") : null;
 
   // ─── AUTH ─────────────────────────────────────────────────
   function loadFamilyNames() {
@@ -613,6 +614,14 @@
     updateMailButton();
   }
 
+  if (syncChannel) {
+    syncChannel.onmessage = event => {
+      if (event.data && (event.data.type === "items" || event.data.type === "quick")) {
+        refreshSharedState();
+      }
+    };
+  }
+
   window.addEventListener("storage", event => {
     if (event.key === "family_shopping" || event.key === "family_quick_products") {
       refreshSharedState();
@@ -620,6 +629,10 @@
   });
 
   window.addEventListener("focus", () => {
+    refreshSharedState();
+  });
+
+  window.addEventListener("pageshow", () => {
     refreshSharedState();
   });
 
@@ -695,6 +708,7 @@
 
   function saveQuickProducts(products) {
     localStorage.setItem("family_quick_products", JSON.stringify(products));
+    if (syncChannel) syncChannel.postMessage({ type: "quick" });
   }
 
   function addQuickProduct(name, category) {
@@ -727,6 +741,7 @@
 
   function saveItems(items) {
     localStorage.setItem("family_shopping", JSON.stringify(items));
+    if (syncChannel) syncChannel.postMessage({ type: "items" });
   }
 
   function renderCatalog() {
