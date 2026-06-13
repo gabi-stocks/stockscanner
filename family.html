@@ -632,11 +632,17 @@
 
   window.addEventListener("focus", () => {
     refreshSharedState();
+    if (getShareUrl()) syncFromRemote();
   });
 
   window.addEventListener("pageshow", () => {
     refreshSharedState();
+    if (getShareUrl()) syncFromRemote();
   });
+
+  setInterval(() => {
+    if (getShareUrl()) syncFromRemote();
+  }, 4000);
 
   renderFamilyNames();
 
@@ -810,6 +816,105 @@
       }
     } catch (e) {
       alert("לא הצלחנו ליצור קישור שיתוף כרגע.");
+    }
+  }
+
+  function getShareUrl() {
+    const fromQuery = new URLSearchParams(window.location.search).get("share");
+    if (fromQuery) return fromQuery;
+    return localStorage.getItem("family_share_url") || "";
+  }
+
+  function setShareUrl(url) {
+    if (!url) return;
+    const cleaned = String(url).trim();
+    if (!/^https?:\/\//i.test(cleaned)) return;
+    localStorage.setItem("family_share_url", cleaned);
+    const next = new URL(window.location.href);
+    next.searchParams.set("share", cleaned);
+    history.replaceState({}, "", next.toString());
+  }
+
+  function encodeSharePayload(data) {
+    const json = JSON.stringify(data);
+    const encoded = btoa(unescape(encodeURIComponent(json)));
+    return `local:${encoded}`;
+  }
+
+  function decodeSharePayload(value) {
+    if (!value || !String(value).startsWith("local:")) return null;
+    try {
+      const encoded = String(value).slice("local:".length);
+      const json = decodeURIComponent(escape(atob(encoded)));
+      return JSON.parse(json);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function normalizeShareUrl(raw, fallbackUrl = "") {
+    if (!raw) return fallbackUrl;
+    const text = String(raw).trim();
+    if (/^https?:\/\//i.test(text)) return text;
+    if (/^local:/i.test(text)) return text;
+    if (/^\/api\/jsonBlob\//i.test(text)) return `${SHARE_API}${text}`;
+    if (/^api\/jsonBlob\//i.test(text)) return `${SHARE_API}/${text}`;
+    if (text.includes("jsonBlob")) return text;
+    return fallbackUrl;
+  }
+
+  async function syncToRemote() {
+    const shareUrl = getShareUrl();
+    if (!shareUrl) return;
+    try {
+      await fetch(shareUrl, {
+        method: "PUT",
+        mode: "cors",
+        cache: "no-store",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ items: loadItems(), quickProducts: loadQuickProducts(), updatedAt: Date.now() })
+      });
+    } catch (e) {}
+  }
+
+  async function syncFromRemote() {
+    const shareUrl = getShareUrl();
+    if (!shareUrl) return false;
+
+    const localPayload = decodeSharePayload(shareUrl);
+    if (localPayload) {
+      if (Array.isArray(localPayload.items)) localStorage.setItem("family_shopping", JSON.stringify(localPayload.items));
+      if (Array.isArray(localPayload.quickProducts)) localStorage.setItem("family_quick_products", JSON.stringify(localPayload.quickProducts));
+      refreshSharedState();
+      return true;
+    }
+
+    try {
+      const res = await fetch(shareUrl, { mode: "cors", cache: "no-store" });
+      if (!res.ok) return false;
+      const data = await res.json();
+      if (Array.isArray(data.items)) localStorage.setItem("family_shopping", JSON.stringify(data.items));
+      if (Array.isArray(data.quickProducts)) localStorage.setItem("family_quick_products", JSON.stringify(data.quickProducts));
+      refreshSharedState();
+      return true;
+    } catch (e) { return false; }
+  }
+
+  async function createShareLink() {
+    const encoded = encodeSharePayload({
+      items: loadItems(),
+      quickProducts: loadQuickProducts(),
+      updatedAt: Date.now()
+    });
+    const finalUrl = `${window.location.origin}${window.location.pathname}?share=${encodeURIComponent(encoded)}`;
+
+    try {
+      setShareUrl(finalUrl);
+      await navigator.clipboard?.writeText(finalUrl);
+      alert("הקישור הועתק! פתח אותו גם במכשיר אחר כדי לראות את אותה רשימה.");
+      refreshSharedState();
+    } catch (e) {
+      alert("הקישור נוצר, אבל ההעתקה נכשלה. אתה יכול להשתמש בכתובת שמופיעה עכשיו בדפדפן.");
     }
   }
 
