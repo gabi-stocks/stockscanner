@@ -135,23 +135,23 @@
     .week-card {
       background: white;
       border-radius: 20px;
-      padding: 24px 28px;
-      margin-bottom: 20px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
-    .week-card h2 { color: #555; font-size: 1rem; margin-bottom: 16px; font-weight: 600; }
+    .week-card h2 { color: #555; font-size: 0.95rem; margin-bottom: 12px; font-weight: 600; }
 
     .days-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
+      gap: 6px;
     }
 
     .day-box {
       background: #f7f8fc;
-      border-radius: 14px;
-      padding: 12px 8px;
+      border-radius: 12px;
+      padding: 8px 4px;
       text-align: center;
       border: 2px solid transparent;
       transition: all 0.2s;
@@ -164,9 +164,9 @@
       box-shadow: 0 4px 15px rgba(102,126,234,0.4);
     }
 
-    .day-name  { font-size: 0.8rem; font-weight: 700; color: #888; }
-    .day-date  { font-size: 1.1rem; font-weight: 700; color: #333; margin-top: 4px; }
-    .day-month { font-size: 0.72rem; color: #aaa; margin-top: 2px; }
+    .day-name  { font-size: 0.72rem; font-weight: 700; color: #888; }
+    .day-date  { font-size: 1rem; font-weight: 700; color: #333; margin-top: 2px; }
+    .day-month { font-size: 0.68rem; color: #aaa; margin-top: 1px; }
 
     .day-box.today .day-name,
     .day-box.today .day-date,
@@ -233,8 +233,8 @@
     .list-item {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 14px 16px;
+      gap: 10px;
+      padding: 10px 12px;
       border-radius: 14px;
       margin-bottom: 8px;
       background: #fafafa;
@@ -309,28 +309,28 @@
     .catalog-grid,
     .summary-grid {
       display: grid;
-      gap: 10px;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
     }
 
     .catalog-chip {
       border: 1px solid #e8ecff;
       border-radius: 12px;
       background: #f7f8ff;
-      padding: 10px;
+      padding: 8px;
       cursor: pointer;
       text-align: right;
       color: #444;
       transition: all 0.2s;
-      font-size: 0.92rem;
+      font-size: 0.88rem;
     }
     .catalog-chip:hover { background: #eef2ff; border-color: #667eea; }
-    .catalog-chip small { display: block; color: #888; margin-top: 4px; font-size: 0.78rem; }
+    .catalog-chip small { display: block; color: #888; margin-top: 3px; font-size: 0.72rem; }
 
     .summary-box {
       background: #f7f8fc;
       border-radius: 14px;
-      padding: 12px;
+      padding: 10px;
       border: 1px solid #eef1f7;
     }
     .summary-box strong { display: block; font-size: 1rem; color: #333; }
@@ -380,7 +380,10 @@
       <p id="week-label"></p>
       <p id="current-user-label" style="color:#667eea; margin-top:6px; font-size:0.85rem;"></p>
     </div>
-    <button id="logout-btn" onclick="logout()">יציאה</button>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button id="send-email-btn" type="button" onclick="sendShoppingList()" style="display:none; padding:8px 12px; border:none; border-radius:10px; background:#eef2ff; color:#4f46e5; cursor:pointer; font-size:0.82rem;">📧 שלח למייל</button>
+      <button id="logout-btn" onclick="logout()">יציאה</button>
+    </div>
   </div>
 
   <!-- Week dates -->
@@ -429,16 +432,10 @@
   const PRODUCT_CATALOG = [
     { name: "תפוחים", category: "פירות וירקות" },
     { name: "בננות", category: "פירות וירקות" },
-    { name: "מלפפונים", category: "פירות וירקות" },
-    { name: "עגבניות", category: "פירות וירקות" },
     { name: "חלב", category: "מוצרי חלב" },
     { name: "יוגורט", category: "מוצרי חלב" },
-    { name: "גבינה", category: "מוצרי חלב" },
     { name: "סבון כלים", category: "מוצרי ניקיון" },
-    { name: "נייר טואלט", category: "מוצרי ניקיון" },
-    { name: "חומר כביסה", category: "מוצרי ניקיון" },
-    { name: "לחם", category: "מוצרי שגרה" },
-    { name: "אורז", category: "מוצרי שגרה" }
+    { name: "נייר טואלט", category: "מוצרי ניקיון" }
   ];
 
   const HEBREW_DAYS = ["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
@@ -649,6 +646,14 @@
     renderSummary(items);
   }
 
+  function detectCategory(name) {
+    const text = name.toLowerCase();
+    if (/תפוח|בננה|מלפפון|עגבני|לימון|אשכול|אבוקדו|גזר|עגבנייה|מלפפונים|ירקות|פירות/.test(text)) return "פירות וירקות";
+    if (/חלב|יוגורט|גבינה|קוטג'|שמנת|ביצים|חמאה/.test(text)) return "מוצרי חלב";
+    if (/סבון|נייר|חומר כביסה|מדיח|מנקה|ניקיון|כלים|טואלט/.test(text)) return "מוצרי ניקיון";
+    return "מוצרי שגרה";
+  }
+
   function addQuickItem(product) {
     addItem(product.name, product.category, getCurrentMember());
   }
@@ -659,7 +664,7 @@
     const categoryEl = document.getElementById("category-input");
     const name   = (nameOverride || nameEl.value.trim());
     const who    = (whoOverride || whoEl.value.trim() || getCurrentMember());
-    const category = (categoryOverride || categoryEl.value || "אחר");
+    const category = detectCategory(name) || (categoryOverride || categoryEl.value || "אחר");
     if (!name) { nameEl.focus(); return; }
 
     const items = loadItems();
@@ -707,11 +712,21 @@
   });
 
   // ─── INIT ─────────────────────────────────────────────────
+  function sendShoppingList() {
+    const items = loadItems();
+    if (!items.length) return;
+    const lines = items.map(item => `- ${item.name}${item.who ? ` (ביקש/ה: ${item.who})` : ''} [${item.category || 'אחר'}]`).join('\n');
+    const subject = encodeURIComponent('רשימת קניות משפחתית');
+    const body = encodeURIComponent(`שלום,\n\nלהלן רשימת הקניות:\n\n${lines}\n`);
+    window.location.href = `mailto:gabidorip@gmail.com?subject=${subject}&body=${body}`;
+  }
+
   function init() {
     renderWeek();
     renderCatalog();
     renderList();
     document.getElementById("current-user-label").textContent = `נבחר כעת: ${getCurrentMember()}`;
+    document.getElementById("send-email-btn").style.display = (getCurrentMember() === "גבי") ? "inline-flex" : "none";
   }
 </script>
 </body>
