@@ -667,73 +667,12 @@
     renderCatalog();
   }
 
-  function getShareUrl() {
-    const fromQuery = new URLSearchParams(window.location.search).get("share");
-    if (fromQuery) return fromQuery;
-    return localStorage.getItem("family_share_url") || "";
-  }
-
-  function setShareUrl(url) {
-    if (!url) return;
-    localStorage.setItem("family_share_url", url);
-    const next = new URL(window.location.href);
-    next.searchParams.set("share", url);
-    history.replaceState({}, "", next.toString());
-  }
-
-  async function syncToRemote() {
-    const shareUrl = getShareUrl();
-    if (!shareUrl) return;
-    try {
-      await fetch(shareUrl, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: loadItems(),
-          quickProducts: loadQuickProducts(),
-          updatedAt: Date.now()
-        })
-      });
-    } catch (e) {}
-  }
-
-  async function syncFromRemote() {
-    const shareUrl = getShareUrl();
-    if (!shareUrl) return false;
-    try {
-      const res = await fetch(shareUrl);
-      if (!res.ok) return false;
-      const data = await res.json();
-      if (Array.isArray(data.items)) localStorage.setItem("family_shopping", JSON.stringify(data.items));
-      if (Array.isArray(data.quickProducts)) localStorage.setItem("family_quick_products", JSON.stringify(data.quickProducts));
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  async function createShareLink() {
-    try {
-      const res = await fetch(SHARE_API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: loadItems(),
-          quickProducts: loadQuickProducts(),
-          updatedAt: Date.now()
-        })
-      });
-      const url = res.headers.get("Location") || (await res.text());
-      if (url) {
-        const finalUrl = url.startsWith("http") ? url : `${SHARE_API}/${url}`;
-        setShareUrl(finalUrl);
-        await syncToRemote();
-        refreshSharedState();
-        navigator.clipboard?.writeText(finalUrl).then(() => alert("הקישור הועתק! פתח אותו גם במכשיר אחר כדי לראות את אותה רשימה."));
-      }
-    } catch (e) {
-      alert("לא הצלחנו ליצור קישור שיתוף כרגע.");
-    }
+  function buildSharePayload() {
+    return {
+      items: loadItems(),
+      quickProducts: loadQuickProducts(),
+      updatedAt: Date.now()
+    };
   }
 
   function getShareUrl() {
@@ -745,11 +684,19 @@
   function setShareUrl(url) {
     if (!url) return;
     const cleaned = String(url).trim();
-    if (!/^https?:\/\//i.test(cleaned)) return;
     localStorage.setItem("family_share_url", cleaned);
     const next = new URL(window.location.href);
     next.searchParams.set("share", cleaned);
     history.replaceState({}, "", next.toString());
+  }
+
+  function normalizeShareUrl(raw) {
+    const text = String(raw || "").trim();
+    if (!text) return "";
+    if (/^https?:\/\//i.test(text)) return text;
+    if (/^\/api\/jsonBlob\//i.test(text)) return `${SHARE_API}${text}`;
+    if (/^api\/jsonBlob\//i.test(text)) return `${SHARE_API}/${text}`;
+    return text;
   }
 
   function encodeSharePayload(data) {
@@ -769,19 +716,13 @@
     }
   }
 
-  function normalizeShareUrl(raw, fallbackUrl = "") {
-    if (!raw) return fallbackUrl;
-    const text = String(raw).trim();
-    if (/^https?:\/\//i.test(text)) return text;
-    if (/^local:/i.test(text)) return text;
-    if (/^\/api\/jsonBlob\//i.test(text)) return `${SHARE_API}${text}`;
-    if (/^api\/jsonBlob\//i.test(text)) return `${SHARE_API}/${text}`;
-    if (text.includes("jsonBlob")) return text;
-    return fallbackUrl;
+  function applySharedPayload(data) {
+    if (Array.isArray(data.items)) localStorage.setItem("family_shopping", JSON.stringify(data.items));
+    if (Array.isArray(data.quickProducts)) localStorage.setItem("family_quick_products", JSON.stringify(data.quickProducts));
   }
 
   async function syncToRemote() {
-    const shareUrl = getShareUrl();
+    const shareUrl = normalizeShareUrl(getShareUrl());
     if (!shareUrl) return;
     try {
       await fetch(shareUrl, {
@@ -789,19 +730,18 @@
         mode: "cors",
         cache: "no-store",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({ items: loadItems(), quickProducts: loadQuickProducts(), updatedAt: Date.now() })
+        body: JSON.stringify(buildSharePayload())
       });
     } catch (e) {}
   }
 
   async function syncFromRemote() {
-    const shareUrl = getShareUrl();
+    const shareUrl = normalizeShareUrl(getShareUrl());
     if (!shareUrl) return false;
 
     const localPayload = decodeSharePayload(shareUrl);
     if (localPayload) {
-      if (Array.isArray(localPayload.items)) localStorage.setItem("family_shopping", JSON.stringify(localPayload.items));
-      if (Array.isArray(localPayload.quickProducts)) localStorage.setItem("family_quick_products", JSON.stringify(localPayload.quickProducts));
+      applySharedPayload(localPayload);
       refreshSharedState();
       return true;
     }
@@ -810,28 +750,30 @@
       const res = await fetch(shareUrl, { mode: "cors", cache: "no-store" });
       if (!res.ok) return false;
       const data = await res.json();
-      if (Array.isArray(data.items)) localStorage.setItem("family_shopping", JSON.stringify(data.items));
-      if (Array.isArray(data.quickProducts)) localStorage.setItem("family_quick_products", JSON.stringify(data.quickProducts));
+      applySharedPayload(data);
       refreshSharedState();
       return true;
-    } catch (e) { return false; }
+    } catch (e) {
+      return false;
+    }
   }
 
   async function createShareLink() {
-    const encoded = encodeSharePayload({
-      items: loadItems(),
-      quickProducts: loadQuickProducts(),
-      updatedAt: Date.now()
-    });
-    const finalUrl = `${window.location.origin}${window.location.pathname}?share=${encodeURIComponent(encoded)}`;
-
     try {
+      const res = await fetch(SHARE_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(buildSharePayload())
+      });
+      const location = res.headers.get("Location") || (await res.text());
+      const finalUrl = location.startsWith("http") ? location : `${SHARE_API}/${location}`;
       setShareUrl(finalUrl);
+      await syncToRemote();
+      refreshSharedState();
       await navigator.clipboard?.writeText(finalUrl);
       alert("הקישור הועתק! פתח אותו גם במכשיר אחר כדי לראות את אותה רשימה.");
-      refreshSharedState();
     } catch (e) {
-      alert("הקישור נוצר, אבל ההעתקה נכשלה. אתה יכול להשתמש בכתובת שמופיעה עכשיו בדפדפן.");
+      alert("לא הצלחנו ליצור קישור שיתוף כרגע.");
     }
   }
 
