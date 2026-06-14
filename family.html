@@ -411,12 +411,8 @@
 <div id="login-screen">
   <div class="login-emoji">🏠</div>
   <h1>שלום משפחה!</h1>
-  <p>הכנס סיסמה ובחר שם כדי להמשיך</p>
-  <select id="name-select" aria-label="בחר שם"></select>
-  <div id="family-name-chips" style="margin:8px 0 10px; text-align:right;"></div>
+  <p>הכנס סיסמה כדי להמשיך</p>
   <input type="password" id="password-input" placeholder="סיסמה" maxlength="20" autocomplete="current-password">
-  <input type="text" id="new-name-input" placeholder="הוסף שם חדש" maxlength="30">
-  <button id="add-name-btn" type="button" onclick="addFamilyName()">+ הוסף שם</button>
   <button id="login-btn" type="button" onclick="login()">כניסה</button>
   <div id="login-error" aria-live="polite"></div>
 </div>
@@ -501,82 +497,15 @@
   const SHARE_API = "https://jsonblob.com/api/jsonBlob";
 
   // ─── AUTH ─────────────────────────────────────────────────
-  function loadFamilyNames() {
-    try { return JSON.parse(localStorage.getItem("family_names") || "[]"); }
-    catch { return []; }
-  }
-
-  function saveFamilyNames(names) {
-    localStorage.setItem("family_names", JSON.stringify(names));
-  }
-
-  function renderFamilyNames() {
-    const names = loadFamilyNames();
-    const select = document.getElementById("name-select");
-    select.innerHTML = "";
-    if (names.length === 0) {
-      names.push("אבא", "אמא", "ילד");
-      saveFamilyNames(names);
-    }
-    names.forEach(name => {
-      const option = document.createElement("option");
-      option.value = name;
-      option.textContent = name;
-      select.appendChild(option);
-    });
-    const current = sessionStorage.getItem("family_member") || "";
-    if (current && [...select.options].some(o => o.value === current)) select.value = current;
-
-    const chips = document.getElementById("family-name-chips");
-    if (chips) {
-      chips.innerHTML = "";
-      names.forEach(name => {
-        const chip = document.createElement("button");
-        chip.type = "button";
-        chip.textContent = `✕ ${name}`;
-        chip.style.cssText = "margin:4px 0; width:100%; padding:8px 10px; border:1px solid #e0e0e0; border-radius:10px; background:#fff; color:#555; cursor:pointer; text-align:right; font-size:0.85rem;";
-        chip.onclick = () => removeFamilyName(name);
-        chips.appendChild(chip);
-      });
-    }
-  }
-
-  function addFamilyName() {
-    const input = document.getElementById("new-name-input");
-    const name = input.value.trim();
-    if (!name) { input.focus(); return; }
-    const names = Array.from(new Set([...loadFamilyNames(), name]));
-    saveFamilyNames(names);
-    renderFamilyNames();
-    document.getElementById("name-select").value = name;
-    input.value = "";
-    input.focus();
-  }
-
-  function removeFamilyName(nameToRemove) {
-    const names = loadFamilyNames().filter(name => name !== nameToRemove);
-    if (names.length === 0) {
-      saveFamilyNames(["אבא", "אמא", "ילד"]);
-    } else {
-      saveFamilyNames(names);
-    }
-    renderFamilyNames();
-  }
-
   function getCurrentMember() {
-    return sessionStorage.getItem("family_member") || "לא נבחר";
+    return sessionStorage.getItem("family_member") || "גבי";
   }
 
   function login() {
     const val = document.getElementById("password-input").value;
-    const member = document.getElementById("name-select").value;
-    if (!member) {
-      document.getElementById("login-error").textContent = "בחר שם לפני הכניסה";
-      return;
-    }
     if (val === PASSWORD) {
       sessionStorage.setItem("family_auth", "1");
-      sessionStorage.setItem("family_member", member);
+      sessionStorage.setItem("family_member", "גבי");
       document.getElementById("login-screen").style.display = "none";
       document.getElementById("app").style.display = "block";
       init();
@@ -597,19 +526,9 @@
     document.getElementById("send-email-btn").style.display = "none";
   }
 
-  document.getElementById("name-select").addEventListener("change", () => {
-    const member = document.getElementById("name-select").value || "";
-    sessionStorage.setItem("family_member", member);
-    updateMailButton();
-  });
-
   document.getElementById("password-input").addEventListener("keydown", e => {
     if (e.key === "Enter") login();
   });
-  document.getElementById("new-name-input").addEventListener("keydown", e => {
-    if (e.key === "Enter") addFamilyName();
-  });
-
   function refreshSharedState() {
     renderCatalog();
     renderList();
@@ -643,8 +562,6 @@
   setInterval(() => {
     if (getShareUrl()) syncFromRemote();
   }, 4000);
-
-  renderFamilyNames();
 
   // Auto-login if already authenticated in this session
   if (sessionStorage.getItem("family_auth") === "1") {
