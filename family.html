@@ -304,6 +304,7 @@
 
   let currentUser = "";
   let selectedMember = "";
+  let currentItems = [];
 
   // ── Member selection ──────────────────────────────────────
   window.selectMember = function(btn, name) {
@@ -408,7 +409,7 @@
         <button class="chip-del" onclick="deleteQuick(event,'${item.id}')" title="הסר מהמהירים">✕</button>`;
       chip.addEventListener("click", e => {
         if (e.target.classList.contains("chip-del")) return;
-        quickAddToList(item.name);
+        quickAddToList(item.name, chip);
       });
       container.appendChild(chip);
     });
@@ -419,7 +420,8 @@
     await deleteDoc(doc(db, "quickItems", id));
   };
 
-  async function quickAddToList(name) {
+  async function quickAddToList(name, chipEl) {
+    if (isDuplicate(name)) { showDuplicateMsg(chipEl); return; }
     await addDoc(itemsCol, { name, who: currentUser, done: false, ts: Date.now() });
   }
 
@@ -436,7 +438,8 @@
     window._unsub1 = onSnapshot(q,
       snap => {
         dot.className = "sync-dot on";
-        renderList(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+        currentItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderList(currentItems);
       },
       err => { dot.className = "sync-dot"; console.error(err); }
     );
@@ -467,10 +470,21 @@
   }
 
   // ── CRUD ─────────────────────────────────────────────────
+  function showDuplicateMsg(el) {
+    el.setCustomValidity("המוצר כבר ברשימה");
+    el.reportValidity();
+    setTimeout(() => el.setCustomValidity(""), 2500);
+  }
+
+  function isDuplicate(name) {
+    return currentItems.some(i => !i.done && i.name.trim() === name.trim());
+  }
+
   window.addItem = async function() {
     const nameEl = document.getElementById("item-input");
     const name   = nameEl.value.trim();
     if (!name) { nameEl.focus(); return; }
+    if (isDuplicate(name)) { showDuplicateMsg(nameEl); return; }
     const btn = document.getElementById("add-btn");
     btn.disabled = true;
     try {
