@@ -1021,5 +1021,59 @@
     setTimeout(() => refreshSharedState(), 100);
   }
 </script>
+  <script type="module">
+  // ייבוא פונקציות מ-Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // ההגדרות של הפרויקט שלך
+  const firebaseConfig = {
+    apiKey: "AIzaSyAXw1rOkCevupn2Qp4Gw0GNr0gq-tCtFgQ",
+    authDomain: "familyshoppinglist-2c297.firebaseapp.com",
+    projectId: "familyshoppinglist-2c297",
+    storageBucket: "familyshoppinglist-2c297.firebasestorage.app",
+    messagingSenderId: "489889558417",
+    appId: "1:489889558417:web:c9d9551699eeaf10bdb430",
+    measurementId: "G-6CLWZTE2EG"
+  };
+
+  // חיבור ל-Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 1. קריאת נתונים בזמן אמת (מחליף את הקריאה מ-localStorage)
+  // הפונקציה הזו "מאזינה" לענן - כל פעם שמישהו יוסיף פריט, היא תרוץ אוטומטית
+  const q = query(collection(db, "shopping_list"), orderBy("timestamp", "desc"));
+  onSnapshot(q, (snapshot) => {
+    
+    // TODO: הוסף כאן שורה שמנקה את ה-HTML של הרשימה הנוכחית כדי למנוע כפילויות
+    
+    snapshot.forEach((doc) => {
+      const item = doc.data();
+      const itemId = doc.id; // חשוב לשמור את ה-ID כדי שתוכל למחוק פריטים בהמשך
+      
+      console.log("התקבל פריט מהענן:", item.name);
+      
+      // TODO: הוסף כאן את הלוגיקה שמייצרת את שורת ה-HTML (<div> או <li>) עבור הפריט
+    });
+  });
+
+  // 2. פונקציה להוספת פריט חדש (מחליף את השמירה ל-localStorage)
+  // חבר את הפונקציה הזו לכפתור ה"הוסף" שלך
+  window.addItemToFirebase = async function(itemName) {
+    if (!itemName) return; // לא נוסיף פריט ריק
+    
+    try {
+      await addDoc(collection(db, "shopping_list"), {
+        name: itemName,
+        done: false, // סטטוס קנייה
+        timestamp: new Date() // כדי שנוכל למיין לפי זמן הוספה
+      });
+      console.log("הפריט נשמר בהצלחה ב-Firebase!");
+    } catch (e) {
+      console.error("שגיאה בשמירת הפריט: ", e);
+    }
+  };
+</script>
 </body>
 </html>
