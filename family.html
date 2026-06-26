@@ -18,7 +18,6 @@
       text-align: right;
     }
 
-    /* ===== LOGIN SCREEN ===== */
     #login-screen {
       background: white;
       border-radius: 20px;
@@ -27,204 +26,74 @@
       text-align: center;
       width: 340px;
     }
-
     #login-screen h1 { font-size: 2rem; margin-bottom: 8px; color: #333; }
     #login-screen p  { color: #888; margin-bottom: 30px; font-size: 0.95rem; }
-
     .login-emoji { font-size: 3rem; margin-bottom: 12px; }
 
     #login-screen input {
-      width: 100%;
-      padding: 14px 18px;
-      border: 2px solid #e0e0e0;
-      border-radius: 12px;
-      font-size: 1rem;
-      outline: none;
+      width: 100%; padding: 14px 18px;
+      border: 2px solid #e0e0e0; border-radius: 12px;
+      font-size: 1rem; outline: none;
+      text-align: center; direction: ltr; letter-spacing: 3px;
       transition: border-color 0.2s;
-      text-align: center;
-      direction: ltr;
-      letter-spacing: 3px;
     }
     #login-screen input:focus { border-color: #667eea; }
 
     #login-btn {
-      width: 100%;
-      margin-top: 16px;
-      padding: 14px;
+      width: 100%; margin-top: 16px; padding: 14px;
       background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s;
+      color: white; border: none; border-radius: 12px;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
     }
-    #add-name-btn {
-      width: 100%;
-      margin-top: 8px;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #e0e0e0;
-      background: #f7f8fc;
-      cursor: pointer;
-      font-size: 0.9rem;
-      color: #555;
-    }
-    #login-btn:hover  { opacity: 0.9; }
-    #login-btn:active { transform: scale(0.98); }
+    #login-btn:hover { opacity: 0.9; }
+    #login-error { color: #e74c3c; margin-top: 12px; font-size: 0.9rem; min-height: 20px; }
 
-    #login-error {
-      color: #e74c3c;
-      margin-top: 12px;
-      font-size: 0.9rem;
-      min-height: 20px;
-    }
-
-    #name-select,
-    #new-name-input {
-      width: 100%;
-      padding: 12px 14px;
-      border: 2px solid #e0e0e0;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      outline: none;
-      margin-bottom: 10px;
-      text-align: right;
-      direction: rtl;
-    }
-
-    #name-select:focus,
-    #new-name-input:focus { border-color: #667eea; }
-
-    /* ===== MAIN APP ===== */
-    #app {
-      display: none;
-      width: 100%;
-      max-width: 700px;
-      padding: 20px;
-    }
+    #app { display: none; width: 100%; max-width: 700px; padding: 20px; }
 
     .header {
-      background: white;
-      border-radius: 20px;
-      padding: 24px 28px;
-      margin-bottom: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: white; border-radius: 20px; padding: 24px 28px;
+      margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      display: flex; justify-content: space-between; align-items: center;
     }
-
     .header h1 { font-size: 1.5rem; color: #333; }
     .header p  { color: #888; font-size: 0.85rem; margin-top: 4px; }
 
     #logout-btn {
-      padding: 8px 16px;
-      background: #f0f0f0;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      color: #666;
-      transition: background 0.2s;
+      padding: 8px 16px; background: #f0f0f0; border: none;
+      border-radius: 10px; cursor: pointer; font-size: 0.85rem; color: #666;
     }
     #logout-btn:hover { background: #e0e0e0; }
 
-    /* ===== WEEK CARD ===== */
-    .week-card {
-      background: white;
-      border-radius: 20px;
-      padding: 16px 18px;
-      margin-bottom: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    .week-card, .shopping-card {
+      background: white; border-radius: 20px; padding: 24px 28px;
+      margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
+    .week-card h2    { color: #555; font-size: 1rem; margin-bottom: 16px; font-weight: 600; }
+    .shopping-card h2 { color: #333; font-size: 1.2rem; margin-bottom: 20px; }
 
-    .week-card h2 { color: #555; font-size: 0.95rem; margin-bottom: 12px; font-weight: 600; }
-
-    .days-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-    }
-
+    .days-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
     .day-box {
-      background: #f7f8fc;
-      border-radius: 12px;
-      padding: 8px 4px;
-      text-align: center;
-      border: 2px solid transparent;
-      transition: all 0.2s;
+      background: #f7f8fc; border-radius: 14px; padding: 12px 8px;
+      text-align: center; border: 2px solid transparent;
     }
-
     .day-box.today {
       background: linear-gradient(135deg, #667eea, #764ba2);
-      border-color: transparent;
-      color: white;
       box-shadow: 0 4px 15px rgba(102,126,234,0.4);
     }
-
-    .day-name  { font-size: 0.72rem; font-weight: 700; color: #888; }
-    .day-date  { font-size: 1rem; font-weight: 700; color: #333; margin-top: 2px; }
-    .day-month { font-size: 0.68rem; color: #aaa; margin-top: 1px; }
-
+    .day-name  { font-size: 0.8rem; font-weight: 700; color: #888; }
+    .day-date  { font-size: 1.1rem; font-weight: 700; color: #333; margin-top: 4px; }
+    .day-month { font-size: 0.72rem; color: #aaa; margin-top: 2px; }
     .day-box.today .day-name,
     .day-box.today .day-date,
     .day-box.today .day-month { color: white; }
 
-    /* ===== SHOPPING CARD ===== */
-    .shopping-card {
-      background: white;
-      border-radius: 20px;
-      padding: 24px 28px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-
-    .shopping-card h2 { color: #333; font-size: 1.2rem; margin-bottom: 20px; }
-
-    .category-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .category-tab {
-      border: 1px solid #e5e7eb;
-      border-radius: 999px;
-      background: #f8fafc;
-      color: #475569;
-      padding: 7px 10px;
-      cursor: pointer;
-      font-size: 0.82rem;
-      transition: all 0.2s;
-    }
-
-    .category-tab.active {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border-color: transparent;
-      box-shadow: 0 4px 12px rgba(102,126,234,0.25);
-    }
-
-    .add-form {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-
+    .add-form { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
     .add-form input {
-      flex: 1;
-      min-width: 120px;
-      padding: 12px 16px;
-      border: 2px solid #e0e0e0;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      outline: none;
+      flex: 1; min-width: 120px; padding: 12px 16px;
+      border: 2px solid #e0e0e0; border-radius: 12px;
+      font-size: 0.95rem; outline: none;
+      text-align: right; direction: rtl;
       transition: border-color 0.2s;
-      text-align: right;
-      direction: rtl;
     }
     .add-form input:focus { border-color: #667eea; }
     .add-form input::placeholder { color: #bbb; }
@@ -232,173 +101,73 @@
     #add-btn {
       padding: 12px 22px;
       background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s;
-      white-space: nowrap;
+      color: white; border: none; border-radius: 12px;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer; white-space: nowrap;
     }
-    #add-btn:hover  { opacity: 0.9; }
-    #add-btn:active { transform: scale(0.97); }
+    #add-btn:hover { opacity: 0.9; }
+    #add-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* ===== LIST ITEMS ===== */
     #shopping-list { list-style: none; }
 
-    .list-empty {
-      text-align: center;
-      padding: 40px 20px;
-      color: #ccc;
-      font-size: 1rem;
-    }
+    .list-empty { text-align: center; padding: 40px 20px; color: #ccc; font-size: 1rem; }
     .list-empty span { font-size: 2.5rem; display: block; margin-bottom: 10px; }
 
     .list-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      margin-bottom: 8px;
-      background: #fafafa;
-      border: 2px solid transparent;
-      transition: all 0.2s;
-      animation: slideIn 0.25s ease;
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px; border-radius: 14px; margin-bottom: 8px;
+      background: #fafafa; border: 2px solid transparent;
+      transition: all 0.2s; animation: slideIn 0.25s ease;
     }
-
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(-8px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
     .list-item:hover { border-color: #e8ecff; background: #f4f6ff; }
-
-    .list-item.done {
-      opacity: 0.5;
-      background: #f9f9f9;
-    }
+    .list-item.done  { opacity: 0.5; }
     .list-item.done .item-name { text-decoration: line-through; color: #aaa; }
 
     .check-btn {
-      width: 28px; height: 28px;
-      min-width: 28px;
-      border-radius: 50%;
-      border: 2.5px solid #667eea;
-      background: white;
-      cursor: pointer;
+      width: 28px; height: 28px; min-width: 28px;
+      border-radius: 50%; border: 2.5px solid #667eea;
+      background: white; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.8rem;
-      color: white;
-      transition: all 0.2s;
+      font-size: 0.8rem; color: white; transition: all 0.2s;
     }
     .list-item.done .check-btn { background: #667eea; border-color: #667eea; }
 
     .item-info { flex: 1; }
-    .item-name { font-size: 0.86rem; color: #333; font-weight: 500; }
-    .item-who  { font-size: 0.72rem; color: #999; margin-top: 2px; }
-
-    .list-group { margin-bottom: 12px; }
-    .list-group-title {
-      font-size: 0.78rem;
-      color: #667eea;
-      font-weight: 700;
-      margin: 0 2px 8px;
-    }
+    .item-name { font-size: 1rem; color: #333; font-weight: 500; }
+    .item-who  { font-size: 0.8rem; color: #999; margin-top: 2px; }
 
     .delete-btn {
-      padding: 6px 12px;
-      background: none;
-      border: none;
-      color: #ddd;
-      font-size: 1.1rem;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: all 0.2s;
+      padding: 6px 12px; background: none; border: none;
+      color: #ddd; font-size: 1.1rem; cursor: pointer;
+      border-radius: 8px; transition: all 0.2s;
     }
     .delete-btn:hover { background: #fff0f0; color: #e74c3c; }
 
     .list-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #f0f0f0;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 16px; padding-top: 16px; border-top: 1px solid #f0f0f0;
     }
-
     .list-footer span { color: #aaa; font-size: 0.85rem; }
 
-    .catalog-card,
-    .summary-card {
-      background: white;
-      border-radius: 20px;
-      padding: 24px 28px;
-      margin-bottom: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-
-    .catalog-grid,
-    .summary-grid {
-      display: grid;
-      gap: 8px;
-      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-    }
-
-    .catalog-chip {
-      border: 1px solid #e8ecff;
-      border-radius: 12px;
-      background: #f7f8ff;
-      padding: 7px;
-      cursor: pointer;
-      text-align: right;
-      color: #444;
-      transition: all 0.2s;
-      font-size: 0.82rem;
-    }
-    .catalog-chip:hover { background: #eef2ff; border-color: #667eea; }
-    .catalog-chip small { display: block; color: #888; margin-top: 2px; font-size: 0.68rem; }
-    .catalog-chip-wrap { position: relative; }
-    .quick-remove-btn {
-      position: absolute;
-      top: 6px;
-      left: 6px;
-      width: 22px;
-      height: 22px;
-      border: none;
-      border-radius: 999px;
-      background: #fff1f2;
-      color: #e11d48;
-      cursor: pointer;
-      font-size: 0.75rem;
-      line-height: 1;
-      box-shadow: 0 2px 8px rgba(225,29,72,0.15);
-    }
-
-    .summary-box {
-      background: #f7f8fc;
-      border-radius: 14px;
-      padding: 10px;
-      border: 1px solid #eef1f7;
-    }
-    .summary-box strong { display: block; font-size: 1rem; color: #333; }
-    .summary-box span { color: #888; font-size: 0.82rem; }
-
     #clear-done-btn {
-      padding: 8px 14px;
-      background: none;
-      border: 1px solid #e0e0e0;
-      border-radius: 10px;
-      color: #999;
-      font-size: 0.82rem;
-      cursor: pointer;
-      transition: all 0.2s;
+      padding: 8px 14px; background: none; border: 1px solid #e0e0e0;
+      border-radius: 10px; color: #999; font-size: 0.82rem;
+      cursor: pointer; transition: all 0.2s;
     }
     #clear-done-btn:hover { background: #fff0f0; border-color: #e74c3c; color: #e74c3c; }
 
+    .sync-indicator {
+      display: inline-block; width: 8px; height: 8px;
+      border-radius: 50%; background: #ccc; margin-left: 6px;
+      vertical-align: middle; transition: background 0.3s;
+    }
+    .sync-indicator.connected { background: #2ecc71; }
+
     @media (max-width: 480px) {
-      .days-grid { grid-template-columns: repeat(5, 1fr); gap: 6px; }
+      .days-grid { gap: 6px; }
       .day-box   { padding: 10px 4px; }
       .day-name  { font-size: 0.7rem; }
       .day-date  { font-size: 0.95rem; }
@@ -407,105 +176,80 @@
 </head>
 <body>
 
-<!-- ===== LOGIN ===== -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-emoji">🏠</div>
   <h1>שלום משפחה!</h1>
   <p>הכנס סיסמה כדי להמשיך</p>
-  <input type="password" id="password-input" placeholder="סיסמה" maxlength="20" autocomplete="current-password">
-  <button id="login-btn" type="button" onclick="login()">כניסה</button>
-  <div id="login-error" aria-live="polite"></div>
+  <input type="password" id="password-input" placeholder="סיסמה" autocomplete="current-password">
+  <button id="login-btn" onclick="login()">כניסה</button>
+  <div id="login-error"></div>
 </div>
 
-<!-- ===== APP ===== -->
+<!-- APP -->
 <div id="app">
-
   <div class="header">
     <div>
-      <h1>🛒 רשימת קניות משפחתית</h1>
+      <h1>🛒 רשימת קניות משפחתית <span class="sync-indicator" id="sync-dot"></span></h1>
       <p id="week-label"></p>
-      <p id="current-user-label" style="color:#667eea; margin-top:6px; font-size:0.85rem;"></p>
     </div>
-    <div style="display:flex; align-items:center; gap:8px;">
-      <button id="share-link-btn" type="button" onclick="createShareLink()" style="padding:8px 12px; border:none; border-radius:10px; background:#ecfdf5; color:#047857; cursor:pointer; font-size:0.82rem;">🔗 קישור שיתוף</button>
-      <button id="send-email-btn" type="button" onclick="sendShoppingList()" style="display:none; padding:8px 12px; border:none; border-radius:10px; background:#eef2ff; color:#4f46e5; cursor:pointer; font-size:0.82rem;">📧 שלח למייל</button>
-      <button id="logout-btn" onclick="logout()">יציאה</button>
-    </div>
+    <button id="logout-btn" onclick="logout()">יציאה</button>
   </div>
 
-  <!-- Week dates -->
   <div class="week-card">
     <h2>📅 ימי השבוע</h2>
     <div class="days-grid" id="days-grid"></div>
-  </div>
-
-  <div class="catalog-card">
-    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px;">
-      <h2 style="margin-bottom:0;">🧺 מוצרים מהירים</h2>
-      <button id="toggle-quick-delete-btn" type="button" onclick="toggleQuickDeleteMode()" style="padding:8px 10px; border:1px solid #e0e0e0; border-radius:10px; background:#fff; color:#555; cursor:pointer; font-size:0.82rem;">🗑️ מחק מוצרים מהירים</button>
-    </div>
-    <div id="quick-delete-hint" style="color:#888; font-size:0.78rem; margin-bottom:8px;">לחץ על הכפתור כדי להסיר מוצרים מהקטלוג.</div>
-    <div class="catalog-grid" id="catalog-grid"></div>
   </div>
 
   <div class="shopping-card">
     <h2>📝 רשימת קניות</h2>
     <div class="add-form">
       <input type="text" id="item-input" placeholder="מה לקנות?" maxlength="80">
-      <select id="category-input" style="padding: 12px 14px; border-radius: 12px; border: 2px solid #e0e0e0; min-width: 140px; text-align: right; direction: rtl;">
-        <option value="אחר">קטגוריה</option>
-        <option value="פירות וירקות">פירות וירקות</option>
-        <option value="מוצרי חלב">מוצרי חלב</option>
-        <option value="מוצרי ניקיון">מוצרי ניקיון</option>
-        <option value="מוצרי שגרה">מוצרי שגרה</option>
-      </select>
       <input type="text" id="who-input"  placeholder="מי ביקש?" maxlength="30">
       <button id="add-btn" onclick="addItem()">+ הוסף</button>
     </div>
-    <div class="category-tabs" id="category-tabs"></div>
     <ul id="shopping-list"></ul>
     <div class="list-footer">
       <span id="list-count"></span>
       <button id="clear-done-btn" onclick="clearDone()">מחק שנקנו ✓</button>
-      <button id="clear-all-btn" onclick="clearAll()" style="padding:8px 14px; background:none; border:1px solid #e0e0e0; border-radius:10px; color:#666; font-size:0.82rem; cursor:pointer;">נקה הכל</button>
     </div>
   </div>
-
-
 </div>
 
-<script>
-  // ─── CONFIG ──────────────────────────────────────────────
-  const PASSWORD = "dori";
+<script type="module">
+  import { initializeApp }                          from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc,
+           onSnapshot, doc, updateDoc,
+           deleteDoc, query, orderBy, writeBatch }  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  const PRODUCT_CATALOG = [
-    { name: "תפוחים", category: "פירות וירקות" },
-    { name: "בננות", category: "פירות וירקות" },
-    { name: "חלב", category: "מוצרי חלב" },
-    { name: "יוגורט", category: "מוצרי חלב" },
-    { name: "סבון כלים", category: "מוצרי ניקיון" },
-    { name: "נייר טואלט", category: "מוצרי ניקיון" }
-  ];
-  let quickDeleteMode = false;
+  // ── Firebase config ──────────────────────────────────────
+  const firebaseConfig = {
+    apiKey:            "AIzaSyAXw1rOkCevupn2Qp4Gw0GNr0gq-tCtFgQ",
+    authDomain:        "familyshoppinglist-2c297.firebaseapp.com",
+    projectId:         "familyshoppinglist-2c297",
+    storageBucket:     "familyshoppinglist-2c297.firebasestorage.app",
+    messagingSenderId: "489889558417",
+    appId:             "1:489889558417:web:c9d9551699eeaf10bdb430",
+    measurementId:     "G-6CLWZTE2EG"
+  };
 
-  const HEBREW_DAYS = ["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+  const col = collection(db, "shoppingItems");
+
+  // ── Password ─────────────────────────────────────────────
+  const PASSWORD = "family2024"; // ← שנה כאן
+
+  // ── Hebrew labels ────────────────────────────────────────
+  const HEBREW_DAYS   = ["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
   const HEBREW_MONTHS = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני",
                           "יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
-  const CATEGORY_ORDER = ["פירות וירקות", "מוצרי חלב", "מוצרי ניקיון", "מוצרי שגרה", "אחר"];
-  let activeCategory = "כלל";
-  const syncChannel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel("family-shopping-sync") : null;
-  const SHARE_API = "https://jsonblob.com/api/jsonBlob";
 
-  // ─── AUTH ─────────────────────────────────────────────────
-  function getCurrentMember() {
-    return sessionStorage.getItem("family_member") || "גבי";
-  }
-
-  function login() {
+  // ── Auth ─────────────────────────────────────────────────
+  window.login = function() {
     const val = document.getElementById("password-input").value;
     if (val === PASSWORD) {
       sessionStorage.setItem("family_auth", "1");
-      sessionStorage.setItem("family_member", "גבי");
       document.getElementById("login-screen").style.display = "none";
       document.getElementById("app").style.display = "block";
       init();
@@ -514,365 +258,77 @@
       document.getElementById("password-input").value = "";
       document.getElementById("password-input").focus();
     }
-  }
+  };
 
-  function logout() {
+  window.logout = function() {
     sessionStorage.removeItem("family_auth");
-    sessionStorage.removeItem("family_member");
     document.getElementById("app").style.display = "none";
     document.getElementById("login-screen").style.display = "block";
     document.getElementById("password-input").value = "";
     document.getElementById("login-error").textContent = "";
-    document.getElementById("send-email-btn").style.display = "none";
-  }
+    if (window._unsubscribe) window._unsubscribe();
+  };
 
   document.getElementById("password-input").addEventListener("keydown", e => {
-    if (e.key === "Enter") login();
-  });
-  function refreshSharedState() {
-    renderCatalog();
-    renderList();
-    updateMailButton();
-  }
-
-  if (syncChannel) {
-    syncChannel.onmessage = event => {
-      if (event.data && (event.data.type === "items" || event.data.type === "quick")) {
-        refreshSharedState();
-      }
-    };
-  }
-
-  window.addEventListener("storage", event => {
-    if (event.key === "family_shopping" || event.key === "family_quick_products") {
-      refreshSharedState();
-    }
+    if (e.key === "Enter") window.login();
   });
 
-  window.addEventListener("focus", () => {
-    refreshSharedState();
-    if (getShareUrl()) syncFromRemote();
-  });
-
-  window.addEventListener("pageshow", () => {
-    refreshSharedState();
-    if (getShareUrl()) syncFromRemote();
-  });
-
-  setInterval(() => {
-    if (getShareUrl()) syncFromRemote();
-  }, 4000);
-
-  // Auto-login if already authenticated in this session
   if (sessionStorage.getItem("family_auth") === "1") {
     document.getElementById("login-screen").style.display = "none";
     document.getElementById("app").style.display = "block";
     init();
   }
 
-  // ─── WEEK DISPLAY ─────────────────────────────────────────
-  function getWeekDays() {
-    const today = new Date();
-    const day = today.getDay(); // 0=Sun
-    // Start from Sunday of this week
+  // ── Week display ─────────────────────────────────────────
+  function renderWeek() {
+    const today  = new Date();
     const sunday = new Date(today);
-    sunday.setDate(today.getDate() - day);
+    sunday.setDate(today.getDate() - today.getDay());
 
     const days = [];
-    for (let i = 0; i <= 4; i++) {  // Sunday(0) to Thursday(4)
+    for (let i = 0; i <= 4; i++) {
       const d = new Date(sunday);
       d.setDate(sunday.getDate() + i);
       days.push(d);
     }
-    return days;
-  }
 
-  function renderWeek() {
-    const days = getWeekDays();
-    const today = new Date();
+    document.getElementById("week-label").textContent =
+      `שבוע ${days[0].getDate()} ${HEBREW_MONTHS[days[0].getMonth()]} – ${days[4].getDate()} ${HEBREW_MONTHS[days[4].getMonth()]} ${days[4].getFullYear()}`;
+
     const grid = document.getElementById("days-grid");
     grid.innerHTML = "";
-
-    const label = `שבוע ${days[0].getDate()} ${HEBREW_MONTHS[days[0].getMonth()]} – ${days[4].getDate()} ${HEBREW_MONTHS[days[4].getMonth()]} ${days[4].getFullYear()}`;
-    document.getElementById("week-label").textContent = label;
-
     days.forEach(d => {
-      const isToday = d.toDateString() === today.toDateString();
       const box = document.createElement("div");
-      box.className = "day-box" + (isToday ? " today" : "");
+      box.className = "day-box" + (d.toDateString() === today.toDateString() ? " today" : "");
       box.innerHTML = `
         <div class="day-name">יום ${HEBREW_DAYS[d.getDay()]}</div>
         <div class="day-date">${d.getDate()}</div>
-        <div class="day-month">${HEBREW_MONTHS[d.getMonth()]}</div>
-      `;
+        <div class="day-month">${HEBREW_MONTHS[d.getMonth()]}</div>`;
       grid.appendChild(box);
     });
   }
 
-  // ─── SHOPPING LIST ────────────────────────────────────────
-  function loadItems() {
-    try {
-      const items = JSON.parse(localStorage.getItem("family_shopping") || "[]");
-      return Array.isArray(items) ? items : [];
-    } catch {
-      return [];
-    }
-  }
+  // ── Firestore real-time list ──────────────────────────────
+  function subscribeList() {
+    const dot = document.getElementById("sync-dot");
+    const q   = query(col, orderBy("ts", "desc"));
 
-  function loadQuickProducts() {
-    const saved = localStorage.getItem("family_quick_products");
-    if (saved === null) return PRODUCT_CATALOG.map(item => ({ ...item }));
-    try {
-      const items = JSON.parse(saved);
-      if (!Array.isArray(items)) return PRODUCT_CATALOG.map(item => ({ ...item }));
-      return items.map(item => ({ name: item.name, category: item.category || "אחר" }));
-    } catch {
-      return PRODUCT_CATALOG.map(item => ({ ...item }));
-    }
-  }
-
-  function saveQuickProducts(products) {
-    localStorage.setItem("family_quick_products", JSON.stringify(products));
-    localStorage.setItem("family_quick_ts", String(Date.now()));
-    if (syncChannel) syncChannel.postMessage({ type: "quick" });
-    syncToRemote();
-    setTimeout(() => refreshSharedState(), 50);
-  }
-
-  function addQuickProduct(name, category) {
-    const cleanName = (name || "").trim();
-    if (!cleanName) return;
-    const products = loadQuickProducts();
-    const existing = products.find(item => item.name.toLowerCase() === cleanName.toLowerCase());
-    if (existing) {
-      existing.category = category || existing.category || "אחר";
-      saveQuickProducts(products);
-      return;
-    }
-    products.unshift({ name: cleanName, category: category || "אחר" });
-    saveQuickProducts(products);
-  }
-
-  function removeQuickProduct(name) {
-    const products = loadQuickProducts().filter(item => item.name.toLowerCase() !== (name || "").toLowerCase());
-    saveQuickProducts(products);
-    renderCatalog();
-  }
-
-  function toggleQuickDeleteMode() {
-    quickDeleteMode = !quickDeleteMode;
-    document.getElementById("quick-delete-hint").textContent = quickDeleteMode
-      ? "לחץ על ✕ ליד מוצר כדי למחוק אותו מהקטלוג"
-      : "לחץ על הכפתור כדי להסיר מוצרים מהקטלוג.";
-    renderCatalog();
-  }
-
-  function buildSharePayload() {
-    return {
-      items: loadItems(),
-      quickProducts: loadQuickProducts(),
-      updatedAt: Date.now()
-    };
-  }
-
-  function getShareUrl() {
-    const fromQuery = new URLSearchParams(window.location.search).get("share");
-    if (fromQuery) return fromQuery;
-    return localStorage.getItem("family_share_url") || "";
-  }
-
-  function setShareUrl(url) {
-    if (!url) return;
-    const cleaned = String(url).trim();
-    localStorage.setItem("family_share_url", cleaned);
-    const next = new URL(window.location.href);
-    next.searchParams.set("share", cleaned);
-    history.replaceState({}, "", next.toString());
-  }
-
-  function normalizeShareUrl(raw) {
-    const text = String(raw || "").trim();
-    if (!text) return "";
-    if (/^https?:\/\//i.test(text)) return text;
-    if (/^\/api\/jsonBlob\//i.test(text)) return `${SHARE_API}${text}`;
-    if (/^api\/jsonBlob\//i.test(text)) return `${SHARE_API}/${text}`;
-    return text;
-  }
-
-  function encodeSharePayload(data) {
-    const json = JSON.stringify(data);
-    const encoded = btoa(unescape(encodeURIComponent(json)));
-    return `local:${encoded}`;
-  }
-
-  function decodeSharePayload(value) {
-    if (!value || !String(value).startsWith("local:")) return null;
-    try {
-      const encoded = String(value).slice("local:".length);
-      const json = decodeURIComponent(escape(atob(encoded)));
-      return JSON.parse(json);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  function applySharedPayload(data) {
-    if (Array.isArray(data.items)) localStorage.setItem("family_shopping", JSON.stringify(data.items));
-    if (Array.isArray(data.quickProducts)) localStorage.setItem("family_quick_products", JSON.stringify(data.quickProducts));
-  }
-
-  async function syncToRemote() {
-    const shareUrl = normalizeShareUrl(getShareUrl());
-    if (!shareUrl) return;
-    try {
-      await fetch(shareUrl, {
-        method: "PUT",
-        mode: "cors",
-        cache: "no-store",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify(buildSharePayload())
-      });
-    } catch (e) {}
-  }
-
-  async function syncFromRemote() {
-    const shareUrl = normalizeShareUrl(getShareUrl());
-    if (!shareUrl) return false;
-
-    const localPayload = decodeSharePayload(shareUrl);
-    if (localPayload) {
-      applySharedPayload(localPayload);
-      refreshSharedState();
-      return true;
-    }
-
-    try {
-      const res = await fetch(shareUrl, { mode: "cors", cache: "no-store" });
-      if (!res.ok) return false;
-      const data = await res.json();
-      applySharedPayload(data);
-      refreshSharedState();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  async function createShareLink() {
-    try {
-      const res = await fetch(SHARE_API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(buildSharePayload())
-      });
-      const location = res.headers.get("Location") || (await res.text());
-      const finalUrl = location.startsWith("http") ? location : `${SHARE_API}/${location}`;
-      setShareUrl(finalUrl);
-      await syncToRemote();
-      refreshSharedState();
-      await navigator.clipboard?.writeText(finalUrl);
-      alert("הקישור הועתק! פתח אותו גם במכשיר אחר כדי לראות את אותה רשימה.");
-    } catch (e) {
-      alert("לא הצלחנו ליצור קישור שיתוף כרגע.");
-    }
-  }
-
-  function saveItems(items) {
-    localStorage.setItem("family_shopping", JSON.stringify(items));
-    localStorage.setItem("family_shopping_ts", String(Date.now()));
-    if (syncChannel) syncChannel.postMessage({ type: "items" });
-    syncToRemote();
-    setTimeout(() => refreshSharedState(), 50);
-  }
-
-  function renderCatalog() {
-    const grid = document.getElementById("catalog-grid");
-    const quickItems = loadQuickProducts();
-
-    grid.innerHTML = "";
-    quickItems.forEach(product => {
-      const wrap = document.createElement("div");
-      wrap.className = "catalog-chip-wrap";
-
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "catalog-chip";
-      btn.innerHTML = `<strong>${escHtml(product.name)}</strong><small>${escHtml(product.category)}</small>`;
-      btn.onclick = () => {
-        if (quickDeleteMode) {
-          removeQuickProduct(product.name);
-          return;
-        }
-        addQuickItem(product);
-      };
-
-      wrap.appendChild(btn);
-
-      if (quickDeleteMode) {
-        const removeBtn = document.createElement("button");
-        removeBtn.type = "button";
-        removeBtn.className = "quick-remove-btn";
-        removeBtn.textContent = "✕";
-        removeBtn.title = `מחק ${product.name}`;
-        removeBtn.onclick = e => {
-          e.stopPropagation();
-          removeQuickProduct(product.name);
-        };
-        wrap.appendChild(removeBtn);
+    window._unsubscribe = onSnapshot(q,
+      snapshot => {
+        dot.className = "sync-indicator connected";
+        const items = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderList(items);
+      },
+      err => {
+        dot.className = "sync-indicator";
+        console.error(err);
       }
-
-      grid.appendChild(wrap);
-    });
+    );
   }
 
-  function renderSummary(items) {
-    const summary = items.reduce((acc, item) => {
-      const key = item.category || "אחר";
-      acc[key] = (acc[key] || 0) + 1;
-      return acc;
-    }, {});
-    const box = document.getElementById("summary-grid");
-    box.innerHTML = "";
-    Object.entries(summary).sort((a, b) => b[1] - a[1]).forEach(([name, count]) => {
-      const card = document.createElement("div");
-      card.className = "summary-box";
-      card.innerHTML = `<strong>${escHtml(name)}</strong><span>${count} פריטים</span>`;
-      box.appendChild(card);
-    });
-    if (Object.keys(summary).length === 0) {
-      box.innerHTML = '<div class="summary-box"><strong>אין פריטים עדיין</strong><span>לחץ על מוצר מהיר או הוסף פריט חדש</span></div>';
-    }
-  }
-
-  function renderCategoryTabs(items) {
-    const tabs = document.getElementById("category-tabs");
-    tabs.innerHTML = "";
-
-    const categories = ["כלל", ...new Set(items.map(item => item.category || "אחר"))];
-    categories.sort((a, b) => (a === "כלל" ? -1 : b === "כלל" ? 1 : CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b)));
-
-    categories.forEach(name => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "category-tab" + (activeCategory === name ? " active" : "");
-      btn.textContent = name === "כלל" ? "הכל" : name;
-      btn.onclick = () => {
-        activeCategory = name;
-        renderList();
-      };
-      tabs.appendChild(btn);
-    });
-  }
-
-  function renderList() {
-    const items = loadItems();
+  function renderList(items) {
     const ul = document.getElementById("shopping-list");
-    const visibleItems = activeCategory === "כלל"
-      ? items
-      : items.filter(item => (item.category || "אחר") === activeCategory);
-
     ul.innerHTML = "";
-    renderCategoryTabs(items);
 
     if (items.length === 0) {
       ul.innerHTML = '<div class="list-empty"><span>🛍️</span>הרשימה ריקה – הוסף פריטים!</div>';
@@ -880,200 +336,72 @@
       return;
     }
 
-    if (visibleItems.length === 0) {
-      ul.innerHTML = '<div class="list-empty"><span>🧺</span>אין פריטים בקטגוריה זו כרגע.</div>';
-      document.getElementById("list-count").textContent = `${items.filter(i => i.done).length}/${items.length} פריטים נקנו`;
-      renderSummary(items);
-      return;
-    }
-
-    const grouped = visibleItems.reduce((acc, item) => {
-      const key = item.category || "אחר";
-      (acc[key] ||= []).push(item);
-      return acc;
-    }, {});
-
-    Object.keys(grouped).sort((a, b) => CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b)).forEach(category => {
-      const group = document.createElement("li");
-      group.className = "list-group";
-      group.innerHTML = `<div class="list-group-title">${escHtml(category)}</div>`;
-      const itemsInGroup = grouped[category];
-      itemsInGroup.forEach((item, idxInGroup) => {
-        const realIndex = items.indexOf(item);
-        const li = document.createElement("li");
-        li.className = "list-item" + (item.done ? " done" : "");
-        li.innerHTML = `
-          <button class="check-btn" onclick="toggleDone(${realIndex})" title="סמן כנקנה">${item.done ? "✓" : ""}</button>
-          <div class="item-info">
-            <div class="item-name">${escHtml(item.name)}</div>
-            ${item.who ? `<div class="item-who">ביקש/ה: ${escHtml(item.who)}</div>` : ""}
-          </div>
-          <button class="delete-btn" onclick="deleteItem(${realIndex})" title="מחק">✕</button>
-        `;
-        group.appendChild(li);
-      });
-      ul.appendChild(group);
+    items.forEach(item => {
+      const li = document.createElement("li");
+      li.className = "list-item" + (item.done ? " done" : "");
+      li.innerHTML = `
+        <button class="check-btn" onclick="toggleDone('${item.id}', ${item.done})">${item.done ? "✓" : ""}</button>
+        <div class="item-info">
+          <div class="item-name">${escHtml(item.name)}</div>
+          ${item.who ? `<div class="item-who">ביקש/ה: ${escHtml(item.who)}</div>` : ""}
+        </div>
+        <button class="delete-btn" onclick="deleteItem('${item.id}')">✕</button>`;
+      ul.appendChild(li);
     });
 
-    const done  = items.filter(i => i.done).length;
-    const total = items.length;
-    document.getElementById("list-count").textContent = `${done}/${total} פריטים נקנו`;
-    renderSummary(items);
+    const done = items.filter(i => i.done).length;
+    document.getElementById("list-count").textContent = `${done}/${items.length} פריטים נקנו`;
   }
 
-  function detectCategory(name) {
-    const text = name.toLowerCase();
-    if (/תפוח|בננה|מלפפון|עגבני|לימון|אשכול|אבוקדו|גזר|עגבנייה|מלפפונים|ירקות|פירות/.test(text)) return "פירות וירקות";
-    if (/חלב|יוגורט|גבינה|קוטג'|שמנת|ביצים|חמאה/.test(text)) return "מוצרי חלב";
-    if (/סבון|נייר|חומר כביסה|מדיח|מנקה|ניקיון|כלים|טואלט/.test(text)) return "מוצרי ניקיון";
-    return "מוצרי שגרה";
-  }
-
-  function addQuickItem(product) {
-    addItem(product.name, product.category, getCurrentMember());
-  }
-
-  function addItem(nameOverride = null, categoryOverride = null, whoOverride = null) {
+  // ── CRUD ─────────────────────────────────────────────────
+  window.addItem = async function() {
     const nameEl = document.getElementById("item-input");
     const whoEl  = document.getElementById("who-input");
-    const categoryEl = document.getElementById("category-input");
-    const name   = (nameOverride || nameEl.value.trim());
-    const who    = (whoOverride || whoEl.value.trim() || getCurrentMember());
-    const category = detectCategory(name) || (categoryOverride || categoryEl.value || "אחר");
+    const name   = nameEl.value.trim();
+    const who    = whoEl.value.trim();
     if (!name) { nameEl.focus(); return; }
 
-    const items = loadItems();
-    items.unshift({ name, who, category, done: false, ts: Date.now() });
-    saveItems(items);
-    addQuickProduct(name, category);
-    renderCatalog();
-    renderList();
-    if (!nameOverride) {
+    const btn = document.getElementById("add-btn");
+    btn.disabled = true;
+    try {
+      await addDoc(col, { name, who, done: false, ts: Date.now() });
       nameEl.value = "";
       whoEl.value  = "";
-      categoryEl.value = "אחר";
       nameEl.focus();
+    } finally {
+      btn.disabled = false;
     }
-  }
+  };
 
-  function toggleDone(idx) {
-    const items = loadItems();
-    items[idx].done = !items[idx].done;
-    saveItems(items);
-    renderList();
-  }
+  window.toggleDone = async function(id, current) {
+    await updateDoc(doc(db, "shoppingItems", id), { done: !current });
+  };
 
-  function deleteItem(idx) {
-    const items = loadItems();
-    items.splice(idx, 1);
-    saveItems(items);
-    renderCatalog();
-    renderList();
-  }
+  window.deleteItem = async function(id) {
+    await deleteDoc(doc(db, "shoppingItems", id));
+  };
 
-  function clearDone() {
-    const items = loadItems().filter(i => !i.done);
-    saveItems(items);
-    renderCatalog();
-    renderList();
-  }
-
-  function clearAll() {
-    saveItems([]);
-    activeCategory = "כלל";
-    renderCatalog();
-    renderList();
-  }
+  window.clearDone = async function() {
+    const snapshot = await new Promise(res => {
+      const unsub = onSnapshot(query(col), snap => { unsub(); res(snap); });
+    });
+    const batch = writeBatch(db);
+    snapshot.docs.filter(d => d.data().done).forEach(d => batch.delete(d.ref));
+    await batch.commit();
+  };
 
   function escHtml(s) {
     return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
 
-  // Allow Enter key in item input
-  document.getElementById("item-input").addEventListener("keydown", e => {
-    if (e.key === "Enter") addItem();
-  });
-  document.getElementById("who-input").addEventListener("keydown", e => {
-    if (e.key === "Enter") addItem();
-  });
+  document.getElementById("item-input").addEventListener("keydown", e => { if (e.key === "Enter") window.addItem(); });
+  document.getElementById("who-input").addEventListener("keydown",  e => { if (e.key === "Enter") window.addItem(); });
 
-  // ─── INIT ─────────────────────────────────────────────────
-  function sendShoppingList() {
-    const items = loadItems();
-    if (!items.length) return;
-    const lines = items.map(item => `- ${item.name}${item.who ? ` (ביקש/ה: ${item.who})` : ''} [${item.category || 'אחר'}]`).join('\n');
-    const subject = encodeURIComponent('רשימת קניות משפחתית');
-    const body = encodeURIComponent(`שלום,\n\nלהלן רשימת הקניות:\n\n${lines}\n`);
-    window.location.href = `mailto:gabidorip@gmail.com?subject=${subject}&body=${body}`;
-  }
-
-  function updateMailButton() {
-    const member = getCurrentMember().trim();
-    document.getElementById("send-email-btn").style.display = (member === "גבי") ? "inline-flex" : "none";
-  }
-
-  async function init() {
+  // ── Init ─────────────────────────────────────────────────
+  function init() {
     renderWeek();
-    if (getShareUrl()) await syncFromRemote();
-    refreshSharedState();
-    document.getElementById("current-user-label").textContent = `נבחר כעת: ${getCurrentMember()}`;
-    updateMailButton();
-    setTimeout(() => refreshSharedState(), 100);
+    subscribeList();
   }
-</script>
-  <script type="module">
-  // ייבוא פונקציות מ-Firebase
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-  // ההגדרות של הפרויקט שלך
-  const firebaseConfig = {
-    apiKey: "AIzaSyAXw1rOkCevupn2Qp4Gw0GNr0gq-tCtFgQ",
-    authDomain: "familyshoppinglist-2c297.firebaseapp.com",
-    projectId: "familyshoppinglist-2c297",
-    storageBucket: "familyshoppinglist-2c297.firebasestorage.app",
-    messagingSenderId: "489889558417",
-    appId: "1:489889558417:web:c9d9551699eeaf10bdb430",
-    measurementId: "G-6CLWZTE2EG"
-  };
-
-  // חיבור ל-Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // 1. קריאת נתונים בזמן אמת (מחליף את הקריאה מ-localStorage)
-  // הפונקציה הזו "מאזינה" לענן - כל פעם שמישהו יוסיף פריט, היא תרוץ אוטומטית
-  const q = query(collection(db, "shopping_list"), orderBy("timestamp", "desc"));
-  onSnapshot(q, (snapshot) => {
-    
-    // TODO: הוסף כאן שורה שמנקה את ה-HTML של הרשימה הנוכחית כדי למנוע כפילויות
-    
-    snapshot.forEach((doc) => {
-      const item = doc.data();
-      const itemId = doc.id; // חשוב לשמור את ה-ID כדי שתוכל למחוק פריטים בהמשך
-      
-      console.log("התקבל פריט מהענן:", item.name);
-      
-      // TODO: הוסף כאן את הלוגיקה שמייצרת את שורת ה-HTML (<div> או <li>) עבור הפריט
-    });
-  });
-
-  // 2. פונקציה להוספת פריט חדש (מחליף את השמירה ל-localStorage)
-  // חבר את הפונקציה הזו לכפתור ה"הוסף" שלך
-  window.addItemToFirebase = async function(itemName) {
-    if (!itemName) return; // לא נוסיף פריט ריק
-    
-    try {
-      await addDoc(collection(db, "shopping_list"), {
-        name: itemName,
-        done: false, // סטטוס קנייה
-        timestamp: new Date() // כדי שנוכל למיין לפי זמן הוספה
-      });
-      console.log("הפריט נשמר בהצלחה ב-Firebase!");
-    } catch (e) {
-      console.error("שגיאה בשמירת הפריט: ", e);
-    }
-  };
 </script>
 </body>
 </html>
