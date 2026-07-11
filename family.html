@@ -77,21 +77,28 @@
     .card h2 { color: #555; font-size: 0.92rem; margin-bottom: 12px; font-weight: 600; }
     .card h2.big { color: #333; font-size: 1.1rem; margin-bottom: 16px; }
 
-    /* WEEK */
-    .days-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-    .day-box {
-      background: #f7f8fc; border-radius: 12px; padding: 10px 5px;
-      text-align: center; border: 2px solid transparent;
+    /* FAMILY IMAGE */
+    .family-img-card {
+      background: white; border-radius: 20px; overflow: hidden;
+      margin-bottom: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     }
-    .day-box.today { background: linear-gradient(135deg,#667eea,#764ba2); box-shadow: 0 4px 14px rgba(102,126,234,0.38); }
-    .day-name  { font-size: 0.73rem; font-weight: 700; color: #888; }
-    .day-date  { font-size: 1rem; font-weight: 700; color: #333; margin-top: 3px; }
-    .day-month { font-size: 0.66rem; color: #aaa; margin-top: 2px; }
-    .day-box.today .day-name, .day-box.today .day-date, .day-box.today .day-month { color: white; }
+    .family-img-card img {
+      width: 100%; display: block; max-height: 280px; object-fit: cover; object-position: center top;
+    }
 
     /* QUICK */
     .quick-section { margin-bottom: 16px; }
-    .quick-section h3 { font-size: 0.8rem; color: #999; margin-bottom: 8px; font-weight: 600; }
+    .quick-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .quick-section h3 { font-size: 0.8rem; color: #999; font-weight: 600; margin: 0; }
+    .quick-sort-btns { display: flex; gap: 5px; }
+    .qsort-btn {
+      font-size: 0.7rem; padding: 3px 10px; border: 1.5px solid #d0d8ff;
+      border-radius: 12px; background: white; color: #888; cursor: pointer;
+    }
+    .qsort-btn.active { background: linear-gradient(135deg,#667eea,#764ba2); color: white; border-color: transparent; }
+    .quick-cat-group { width: 100%; margin-top: 6px; }
+    .quick-cat-label { font-size: 0.7rem; color: #aaa; font-weight: 700; margin-bottom: 4px; padding-right: 2px; }
+    .quick-cat-chips { display: flex; flex-wrap: wrap; gap: 6px; }
     .quick-chips { display: flex; flex-wrap: wrap; gap: 6px; }
     .quick-chip {
       display: inline-flex; align-items: center; gap: 4px;
@@ -304,7 +311,6 @@
   <div class="header">
     <div>
       <h1>🛒 רשימת קניות <span class="sync-dot" id="sync-dot"></span></h1>
-      <p id="week-label"></p>
     </div>
     <div class="header-right">
       <div class="user-badge" id="user-badge"></div>
@@ -312,10 +318,9 @@
     </div>
   </div>
 
-  <!-- Week -->
-  <div class="card">
-    <h2>📅 ימי השבוע</h2>
-    <div class="days-grid" id="days-grid"></div>
+  <!-- Family image -->
+  <div class="family-img-card">
+    <img src="family.jpg" alt="המשפחה שלנו">
   </div>
 
   <!-- Shopping -->
@@ -324,7 +329,13 @@
 
     <!-- Quick items -->
     <div class="quick-section">
-      <h3>⚡ מוצרים מהירים — לחץ להוספה</h3>
+      <div class="quick-header">
+        <h3>⚡ מוצרים מהירים — לחץ להוספה</h3>
+        <div class="quick-sort-btns">
+          <button class="qsort-btn active" id="qsort-cat" onclick="setQuickSort('cat')">📦 קטגוריה</button>
+          <button class="qsort-btn" id="qsort-abc" onclick="setQuickSort('abc')">א-ב</button>
+        </div>
+      </div>
       <div class="quick-chips" id="quick-chips"></div>
     </div>
 
@@ -387,9 +398,6 @@
   const CAT_DOC  = doc(db, "config", "categories");
 
   const PASSWORD = "dori";
-  const HEBREW_DAYS   = ["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
-  const HEBREW_MONTHS = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני",
-                          "יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
 
   const DEFAULT_CATS = [
     "🥦 ירקות ופירות",
@@ -407,6 +415,8 @@
   let currentItems   = [];
   let categories     = [...DEFAULT_CATS];
   let viewMode       = "cat"; // "all" | "cat"
+  let quickSort      = "cat"; // "cat" | "abc"
+  let currentQuick   = [];
 
   // ── Auth ─────────────────────────────────────────────────
   window.selectMember = function(btn, name) {
@@ -457,29 +467,6 @@
     document.getElementById("app").style.display = "block";
     document.getElementById("user-badge").textContent = "👤 " + currentUser;
     init();
-  }
-
-  // ── Week ─────────────────────────────────────────────────
-  function renderWeek() {
-    const today  = new Date();
-    const sunday = new Date(today);
-    sunday.setDate(today.getDate() - today.getDay());
-    const days = [];
-    for (let i = 0; i <= 4; i++) {
-      const d = new Date(sunday); d.setDate(sunday.getDate() + i); days.push(d);
-    }
-    document.getElementById("week-label").textContent =
-      `שבוע ${days[0].getDate()} ${HEBREW_MONTHS[days[0].getMonth()]} – ${days[4].getDate()} ${HEBREW_MONTHS[days[4].getMonth()]} ${days[4].getFullYear()}`;
-    const grid = document.getElementById("days-grid");
-    grid.innerHTML = "";
-    days.forEach(d => {
-      const box = document.createElement("div");
-      box.className = "day-box" + (d.toDateString() === today.toDateString() ? " today" : "");
-      box.innerHTML = `<div class="day-name">יום ${HEBREW_DAYS[d.getDay()]}</div>
-        <div class="day-date">${d.getDate()}</div>
-        <div class="day-month">${HEBREW_MONTHS[d.getMonth()]}</div>`;
-      grid.appendChild(box);
-    });
   }
 
   // ── Categories ────────────────────────────────────────────
@@ -566,9 +553,17 @@
   };
 
   // ── Quick items ───────────────────────────────────────────
+  window.setQuickSort = function(mode) {
+    quickSort = mode;
+    document.getElementById("qsort-cat").classList.toggle("active", mode === "cat");
+    document.getElementById("qsort-abc").classList.toggle("active", mode === "abc");
+    renderQuick(currentQuick);
+  };
+
   function subscribeQuick() {
     window._unsub2 = onSnapshot(query(quickCol, orderBy("name")), snap => {
-      renderQuick(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      currentQuick = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderQuick(currentQuick);
     });
   }
 
@@ -579,7 +574,8 @@
       container.innerHTML = '<span class="quick-empty">הוסף מוצרים — הם יופיעו כאן לבחירה מהירה</span>';
       return;
     }
-    items.forEach(item => {
+
+    const makeChip = item => {
       const chip = document.createElement("div");
       chip.className = "quick-chip";
       chip.dataset.id = item.id;
@@ -596,7 +592,38 @@
         const cat = chip.querySelector(".chip-cat-select").value || categories[categories.length - 1] || "🛒 אחר";
         quickAddToList(item.name, cat);
       });
-      container.appendChild(chip);
+      return chip;
+    };
+
+    if (quickSort === "abc") {
+      const sorted = [...items].sort((a, b) => a.name.localeCompare(b.name, "he"));
+      sorted.forEach(item => container.appendChild(makeChip(item)));
+      return;
+    }
+
+    // sort by category order
+    const catOrder = [...categories, "ללא קטגוריה"];
+    const groups = {};
+    catOrder.forEach(c => groups[c] = []);
+    items.forEach(item => {
+      const c = item.category && groups[item.category] !== undefined ? item.category : "ללא קטגוריה";
+      if (!groups[c]) groups[c] = [];
+      groups[c].push(item);
+    });
+    catOrder.forEach(cat => {
+      const group = groups[cat];
+      if (!group || group.length === 0) return;
+      const wrapper = document.createElement("div");
+      wrapper.className = "quick-cat-group";
+      const label = document.createElement("div");
+      label.className = "quick-cat-label";
+      label.textContent = cat;
+      wrapper.appendChild(label);
+      const chipsRow = document.createElement("div");
+      chipsRow.className = "quick-cat-chips";
+      group.forEach(item => chipsRow.appendChild(makeChip(item)));
+      wrapper.appendChild(chipsRow);
+      container.appendChild(wrapper);
     });
   }
 
@@ -768,7 +795,6 @@
 
   // ── Init ─────────────────────────────────────────────────
   async function init() {
-    renderWeek();
     await loadCategories();
     subscribeList();
     subscribeQuick();
