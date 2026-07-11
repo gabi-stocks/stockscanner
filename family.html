@@ -6,7 +6,6 @@
   <title>רשימת קניות משפחתית</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -15,7 +14,7 @@
       direction: rtl; text-align: right;
     }
 
-    /* ── LOGIN ── */
+    /* LOGIN */
     #login-screen {
       background: white; border-radius: 20px; padding: 44px 36px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; width: 360px;
@@ -23,29 +22,24 @@
     .login-emoji { font-size: 3rem; margin-bottom: 10px; }
     #login-screen h1 { font-size: 1.9rem; margin-bottom: 6px; color: #333; }
     #login-screen > p { color: #888; margin-bottom: 24px; font-size: 0.9rem; }
-
     .member-label { font-size: 0.85rem; color: #666; margin-bottom: 10px; font-weight: 600; }
-    .member-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px;
-    }
+    .member-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
     .member-btn {
       padding: 10px 6px; border: 2px solid #e0e0e0; border-radius: 12px;
       background: white; cursor: pointer; font-size: 0.9rem; color: #555;
       transition: all 0.18s; font-weight: 500;
     }
-    .member-btn:hover  { border-color: #667eea; color: #667eea; }
+    .member-btn:hover { border-color: #667eea; color: #667eea; }
     .member-btn.active {
       border-color: #667eea; background: linear-gradient(135deg,#667eea,#764ba2);
       color: white; box-shadow: 0 3px 10px rgba(102,126,234,0.35);
     }
-
     #login-screen input[type=password] {
       width: 100%; padding: 13px 18px; border: 2px solid #e0e0e0; border-radius: 12px;
       font-size: 1rem; outline: none; text-align: center; direction: ltr;
       letter-spacing: 3px; transition: border-color 0.2s;
     }
     #login-screen input[type=password]:focus { border-color: #667eea; }
-
     #login-btn {
       width: 100%; margin-top: 14px; padding: 13px;
       background: linear-gradient(135deg, #667eea, #764ba2);
@@ -55,155 +49,233 @@
     #login-btn:hover { opacity: 0.9; }
     #login-error { color: #e74c3c; margin-top: 10px; font-size: 0.88rem; min-height: 18px; }
 
-    /* ── APP ── */
-    #app { display: none; width: 100%; max-width: 720px; padding: 20px; }
+    /* APP */
+    #app { display: none; width: 100%; max-width: 740px; padding: 20px; }
 
     .header {
-      background: white; border-radius: 20px; padding: 22px 26px; margin-bottom: 18px;
+      background: white; border-radius: 20px; padding: 20px 24px; margin-bottom: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.13);
       display: flex; justify-content: space-between; align-items: center;
     }
-    .header h1 { font-size: 1.4rem; color: #333; }
-    .header p  { color: #888; font-size: 0.82rem; margin-top: 3px; }
-    .header-right { display: flex; align-items: center; gap: 10px; }
+    .header h1 { font-size: 1.35rem; color: #333; }
+    .header p  { color: #888; font-size: 0.8rem; margin-top: 3px; }
+    .header-right { display: flex; align-items: center; gap: 8px; }
     .user-badge {
-      padding: 6px 14px; background: linear-gradient(135deg,#667eea,#764ba2);
-      color: white; border-radius: 20px; font-size: 0.82rem; font-weight: 600;
+      padding: 5px 13px; background: linear-gradient(135deg,#667eea,#764ba2);
+      color: white; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
     }
     #logout-btn {
-      padding: 7px 14px; background: #f0f0f0; border: none;
-      border-radius: 10px; cursor: pointer; font-size: 0.82rem; color: #666;
+      padding: 6px 13px; background: #f0f0f0; border: none;
+      border-radius: 10px; cursor: pointer; font-size: 0.8rem; color: #666;
     }
     #logout-btn:hover { background: #e0e0e0; }
 
     .card {
-      background: white; border-radius: 20px; padding: 22px 26px;
-      margin-bottom: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      background: white; border-radius: 20px; padding: 20px 24px;
+      margin-bottom: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     }
-    .card h2 { color: #555; font-size: 0.95rem; margin-bottom: 14px; font-weight: 600; }
-    .card h2.big { color: #333; font-size: 1.15rem; margin-bottom: 18px; }
+    .card h2 { color: #555; font-size: 0.92rem; margin-bottom: 12px; font-weight: 600; }
+    .card h2.big { color: #333; font-size: 1.1rem; margin-bottom: 16px; }
 
-    /* ── WEEK ── */
+    /* WEEK */
     .days-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
     .day-box {
-      background: #f7f8fc; border-radius: 13px; padding: 11px 6px;
+      background: #f7f8fc; border-radius: 12px; padding: 10px 5px;
       text-align: center; border: 2px solid transparent;
     }
-    .day-box.today {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      box-shadow: 0 4px 14px rgba(102,126,234,0.38);
-    }
-    .day-name  { font-size: 0.75rem; font-weight: 700; color: #888; }
-    .day-date  { font-size: 1.05rem; font-weight: 700; color: #333; margin-top: 3px; }
-    .day-month { font-size: 0.68rem; color: #aaa; margin-top: 2px; }
-    .day-box.today .day-name,
-    .day-box.today .day-date,
-    .day-box.today .day-month { color: white; }
+    .day-box.today { background: linear-gradient(135deg,#667eea,#764ba2); box-shadow: 0 4px 14px rgba(102,126,234,0.38); }
+    .day-name  { font-size: 0.73rem; font-weight: 700; color: #888; }
+    .day-date  { font-size: 1rem; font-weight: 700; color: #333; margin-top: 3px; }
+    .day-month { font-size: 0.66rem; color: #aaa; margin-top: 2px; }
+    .day-box.today .day-name, .day-box.today .day-date, .day-box.today .day-month { color: white; }
 
-    /* ── QUICK ITEMS ── */
-    .quick-section { margin-bottom: 18px; }
-    .quick-section h3 { font-size: 0.82rem; color: #999; margin-bottom: 10px; font-weight: 600; }
-    .quick-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    /* QUICK */
+    .quick-section { margin-bottom: 16px; }
+    .quick-section h3 { font-size: 0.8rem; color: #999; margin-bottom: 8px; font-weight: 600; }
+    .quick-chips { display: flex; flex-wrap: wrap; gap: 6px; }
     .quick-chip {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 6px 12px; background: #f0f2ff; border: 1.5px solid #d0d8ff;
-      border-radius: 20px; font-size: 0.85rem; color: #555; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 5px 10px; background: #f0f2ff; border: 1.5px solid #d0d8ff;
+      border-radius: 20px; font-size: 0.82rem; color: #555; cursor: pointer;
       transition: all 0.15s;
     }
-    .quick-chip:hover { background: #e0e5ff; border-color: #667eea; color: #333; }
-    .quick-chip .chip-name { flex: 1; }
-    .quick-chip .chip-del {
-      font-size: 0.75rem; color: #bbb; cursor: pointer; padding: 0 2px;
-      border-radius: 50%; transition: color 0.15s;
-      background: none; border: none; line-height: 1;
+    .quick-chip:hover { background: #e0e5ff; border-color: #667eea; }
+    .quick-chip .chip-cat { font-size: 0.7rem; color: #aaa; }
+    .chip-cat-wrap { display: inline-flex; align-items: center; }
+    .chip-cat-select {
+      font-size: 0.68rem; color: #666; border: 1px solid #dde;
+      border-radius: 7px; padding: 1px 4px; background: #f5f6ff;
+      cursor: pointer; max-width: 110px; direction: rtl; margin: 0 3px;
     }
-    .quick-chip .chip-del:hover { color: #e74c3c; }
-    .quick-empty { color: #ccc; font-size: 0.82rem; }
+    .chip-del {
+      font-size: 0.72rem; color: #ccc; cursor: pointer;
+      background: none; border: none; line-height: 1; padding: 0 1px;
+    }
+    .chip-del:hover { color: #e74c3c; }
+    .quick-empty { color: #ccc; font-size: 0.8rem; }
 
-    /* ── ADD FORM ── */
-    .add-form { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-    .add-form input {
-      flex: 1; min-width: 110px; padding: 11px 14px;
-      border: 2px solid #e0e0e0; border-radius: 12px;
-      font-size: 0.92rem; outline: none;
-      text-align: right; direction: rtl; transition: border-color 0.2s;
+    /* ADD FORM */
+    .add-form { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+    .add-form input, .add-form select {
+      padding: 10px 13px; border: 2px solid #e0e0e0; border-radius: 11px;
+      font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+      background: white;
     }
-    .add-form input:focus { border-color: #667eea; }
+    .add-form input  { flex: 2; min-width: 120px; text-align: right; direction: rtl; }
+    .add-form select { flex: 1; min-width: 110px; cursor: pointer; color: #555; }
+    .add-form input:focus, .add-form select:focus { border-color: #667eea; }
     .add-form input::placeholder { color: #bbb; }
-
     #add-btn {
-      padding: 11px 20px;
+      padding: 10px 18px;
       background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white; border: none; border-radius: 12px;
-      font-size: 0.92rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+      color: white; border: none; border-radius: 11px;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap;
     }
     #add-btn:hover { opacity: 0.9; }
     #add-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* ── LIST ── */
+    /* VIEW TOGGLE + CATEGORY MANAGEMENT */
+    .toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
+    }
+    .view-toggle { display: flex; gap: 6px; }
+    .view-btn {
+      padding: 6px 14px; border: 2px solid #e0e0e0; border-radius: 20px;
+      background: white; font-size: 0.8rem; color: #888; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .view-btn.active {
+      border-color: #667eea; background: #667eea; color: white;
+    }
+    #manage-cat-btn {
+      padding: 6px 13px; border: 1.5px solid #e0e0e0; border-radius: 20px;
+      background: white; font-size: 0.8rem; color: #999; cursor: pointer;
+      transition: all 0.15s;
+    }
+    #manage-cat-btn:hover { border-color: #667eea; color: #667eea; }
+
+    /* CATEGORY MANAGER PANEL */
+    #cat-manager {
+      display: none; margin-bottom: 16px;
+      background: #f8f9ff; border-radius: 14px; padding: 14px 16px;
+      border: 1.5px solid #e0e5ff;
+    }
+    #cat-manager h4 { font-size: 0.85rem; color: #667eea; margin-bottom: 10px; }
+    .cat-list { list-style: none; margin-bottom: 10px; }
+    .cat-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 10px; background: white; border-radius: 10px;
+      margin-bottom: 5px; border: 1.5px solid #eee;
+    }
+    .cat-emoji { font-size: 1rem; width: 22px; text-align: center; }
+    .cat-name-lbl { flex: 1; font-size: 0.88rem; color: #333; }
+    .cat-ord-btn {
+      width: 26px; height: 26px; border: 1.5px solid #e0e0e0;
+      border-radius: 7px; background: white; cursor: pointer;
+      font-size: 0.8rem; color: #888; display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .cat-ord-btn:hover { border-color: #667eea; color: #667eea; }
+    .cat-del-btn {
+      width: 26px; height: 26px; border: none; background: none;
+      cursor: pointer; font-size: 0.85rem; color: #ddd; transition: color 0.15s;
+    }
+    .cat-del-btn:hover { color: #e74c3c; }
+    .add-cat-row { display: flex; gap: 6px; }
+    .add-cat-row input {
+      flex: 1; padding: 7px 11px; border: 1.5px solid #e0e0e0;
+      border-radius: 9px; font-size: 0.85rem; outline: none;
+    }
+    .add-cat-row input:focus { border-color: #667eea; }
+    .add-cat-row button {
+      padding: 7px 14px; background: #667eea; color: white;
+      border: none; border-radius: 9px; font-size: 0.85rem;
+      cursor: pointer; white-space: nowrap;
+    }
+
+    /* LIST */
     #shopping-list { list-style: none; }
-    .list-empty { text-align: center; padding: 36px 20px; color: #ccc; font-size: 0.95rem; }
-    .list-empty span { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+    .list-empty { text-align: center; padding: 32px 20px; color: #ccc; font-size: 0.92rem; }
+    .list-empty span { font-size: 2rem; display: block; margin-bottom: 8px; }
+
+    /* Category group header */
+    .cat-group-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 4px; margin: 10px 0 4px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    .cat-group-header .cat-emoji-h { font-size: 1.1rem; }
+    .cat-group-header .cat-name-h  { font-size: 0.85rem; font-weight: 700; color: #888; }
+    .cat-group-header .cat-count-h { font-size: 0.75rem; color: #ccc; }
 
     .list-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 13px 14px; border-radius: 13px; margin-bottom: 7px;
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 13px; border-radius: 12px; margin-bottom: 6px;
       background: #fafafa; border: 2px solid transparent;
-      transition: all 0.2s; animation: slideIn 0.22s ease;
+      transition: all 0.2s; animation: slideIn 0.2s ease;
     }
     @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-7px); }
+      from { opacity: 0; transform: translateY(-6px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     .list-item:hover { border-color: #e8ecff; background: #f4f6ff; }
-    .list-item.done  { opacity: 0.48; }
+    .list-item.done  { opacity: 0.45; }
     .list-item.done .item-name { text-decoration: line-through; color: #aaa; }
 
     .check-btn {
-      width: 26px; height: 26px; min-width: 26px;
+      width: 25px; height: 25px; min-width: 25px;
       border-radius: 50%; border: 2.5px solid #667eea;
       background: white; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem; color: white; transition: all 0.2s;
+      font-size: 0.72rem; color: white; transition: all 0.2s;
     }
     .list-item.done .check-btn { background: #667eea; border-color: #667eea; }
 
     .item-info { flex: 1; }
-    .item-name { font-size: 0.97rem; color: #333; font-weight: 500; }
-    .item-who  { font-size: 0.76rem; color: #999; margin-top: 2px; }
+    .item-name { font-size: 0.94rem; color: #333; font-weight: 500; }
+    .item-meta { font-size: 0.73rem; color: #bbb; margin-top: 2px; }
+    .item-cat-select {
+      font-size: 0.7rem; color: #666; border: 1px solid #dde; border-radius: 8px;
+      padding: 2px 5px; background: #f0f2ff; margin-left: 5px; cursor: pointer;
+      max-width: 140px; direction: rtl;
+    }
+    .item-who { margin-right: 6px; }
+    .item-cat-badge {
+      display: inline-block; padding: 2px 8px;
+      background: #f0f2ff; border-radius: 10px;
+      font-size: 0.7rem; color: #888; margin-right: 5px;
+    }
 
     .delete-btn {
-      padding: 5px 10px; background: none; border: none;
-      color: #ddd; font-size: 1rem; cursor: pointer; border-radius: 7px;
+      padding: 4px 9px; background: none; border: none;
+      color: #ddd; font-size: 0.95rem; cursor: pointer; border-radius: 7px;
       transition: all 0.2s;
     }
     .delete-btn:hover { background: #fff0f0; color: #e74c3c; }
 
     .list-footer {
       display: flex; justify-content: space-between; align-items: center;
-      margin-top: 14px; padding-top: 14px; border-top: 1px solid #f0f0f0;
+      margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0;
     }
-    .list-footer span { color: #aaa; font-size: 0.82rem; }
+    .list-footer span { color: #aaa; font-size: 0.8rem; }
     #clear-done-btn {
-      padding: 7px 13px; background: none; border: 1px solid #e0e0e0;
-      border-radius: 9px; color: #999; font-size: 0.79rem; cursor: pointer;
-      transition: all 0.2s;
+      padding: 6px 12px; background: none; border: 1px solid #e0e0e0;
+      border-radius: 9px; color: #999; font-size: 0.77rem; cursor: pointer; transition: all 0.2s;
     }
     #clear-done-btn:hover { background: #fff0f0; border-color: #e74c3c; color: #e74c3c; }
 
     .sync-dot {
-      display: inline-block; width: 7px; height: 7px;
-      border-radius: 50%; background: #ccc; margin-right: 5px;
-      vertical-align: middle; transition: background 0.3s;
+      display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+      background: #ccc; margin-right: 5px; vertical-align: middle; transition: background 0.3s;
     }
     .sync-dot.on { background: #2ecc71; }
 
-    @media (max-width: 480px) {
-      .days-grid { gap: 5px; }
-      .day-box { padding: 9px 3px; }
-      .day-name { font-size: 0.68rem; }
-      .day-date { font-size: 0.9rem; }
-      .member-grid { grid-template-columns: repeat(3, 1fr); }
+    @media (max-width: 500px) {
+      .days-grid { gap: 4px; }
+      .day-box { padding: 8px 2px; }
+      .day-name { font-size: 0.66rem; }
+      .add-form select { min-width: 90px; }
     }
   </style>
 </head>
@@ -214,7 +286,6 @@
   <div class="login-emoji">🏠</div>
   <h1>שלום משפחה!</h1>
   <p>בחר את שמך והכנס סיסמה</p>
-
   <div class="member-label">מי אתה?</div>
   <div class="member-grid">
     <button class="member-btn" onclick="selectMember(this,'אלון')">אלון</button>
@@ -223,7 +294,6 @@
     <button class="member-btn" onclick="selectMember(this,'ענבל')">ענבל</button>
     <button class="member-btn" onclick="selectMember(this,'גבי')">גבי</button>
   </div>
-
   <input type="password" id="password-input" placeholder="סיסמה" autocomplete="current-password">
   <button id="login-btn" onclick="login()">כניסה</button>
   <div id="login-error"></div>
@@ -261,11 +331,30 @@
     <!-- Add form -->
     <div class="add-form">
       <input type="text" id="item-input" placeholder="מוצר חדש..." maxlength="80">
+      <select id="cat-select"></select>
       <button id="add-btn" onclick="addItem()">+ הוסף</button>
     </div>
 
-    <ul id="shopping-list"></ul>
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="view-toggle">
+        <button class="view-btn" id="view-all-btn" onclick="setView('all')">הכל</button>
+        <button class="view-btn active" id="view-cat-btn" onclick="setView('cat')">לפי קטגוריה</button>
+      </div>
+      <button id="manage-cat-btn" onclick="toggleCatManager()">⚙️ קטגוריות</button>
+    </div>
 
+    <!-- Category manager -->
+    <div id="cat-manager">
+      <h4>סדר וניהול קטגוריות</h4>
+      <ul class="cat-list" id="cat-list"></ul>
+      <div class="add-cat-row">
+        <input type="text" id="new-cat-input" placeholder="שם קטגוריה חדשה (למשל: 🧁 ממתקים)" maxlength="40">
+        <button onclick="addCategory()">+ הוסף</button>
+      </div>
+    </div>
+
+    <ul id="shopping-list"></ul>
     <div class="list-footer">
       <span id="list-count"></span>
       <button id="clear-done-btn" onclick="clearDone()">מחק שנקנו ✓</button>
@@ -277,7 +366,8 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import {
     getFirestore, collection, addDoc, onSnapshot,
-    doc, updateDoc, deleteDoc, query, orderBy, writeBatch, getDocs
+    doc, updateDoc, deleteDoc, query, orderBy,
+    writeBatch, getDocs, setDoc, getDoc
   } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -294,19 +384,31 @@
   const db       = getFirestore(app);
   const itemsCol = collection(db, "shoppingItems");
   const quickCol = collection(db, "quickItems");
+  const CAT_DOC  = doc(db, "config", "categories");
 
   const PASSWORD = "dori";
-  const MEMBERS  = ["אלון","נדב","נטע","ענבל","גבי"];
-
   const HEBREW_DAYS   = ["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
   const HEBREW_MONTHS = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני",
                           "יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
 
-  let currentUser = "";
-  let selectedMember = "";
-  let currentItems = [];
+  const DEFAULT_CATS = [
+    "🥦 ירקות ופירות",
+    "🥛 מוצרי חלב",
+    "🥩 בשר ודגים",
+    "🍞 מאפייה",
+    "🥫 שימורים ויבשים",
+    "🧃 משקאות",
+    "🧹 ניקיון וטיפוח",
+    "🛒 אחר"
+  ];
 
-  // ── Member selection ──────────────────────────────────────
+  let currentUser    = "";
+  let selectedMember = "";
+  let currentItems   = [];
+  let categories     = [...DEFAULT_CATS];
+  let viewMode       = "cat"; // "all" | "cat"
+
+  // ── Auth ─────────────────────────────────────────────────
   window.selectMember = function(btn, name) {
     document.querySelectorAll(".member-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
@@ -314,12 +416,8 @@
     document.getElementById("login-error").textContent = "";
   };
 
-  // ── Auth ─────────────────────────────────────────────────
   window.login = function() {
-    if (!selectedMember) {
-      document.getElementById("login-error").textContent = "אנא בחר את שמך תחילה";
-      return;
-    }
+    if (!selectedMember) { document.getElementById("login-error").textContent = "אנא בחר את שמך תחילה"; return; }
     const val = document.getElementById("password-input").value;
     if (val === PASSWORD) {
       currentUser = selectedMember;
@@ -344,12 +442,11 @@
     document.querySelectorAll(".member-btn").forEach(b => b.classList.remove("active"));
     if (window._unsub1) window._unsub1();
     if (window._unsub2) window._unsub2();
+    if (window._unsub3) window._unsub3();
   };
 
-  document.getElementById("password-input")
-    .addEventListener("keydown", e => { if (e.key === "Enter") window.login(); });
+  document.getElementById("password-input").addEventListener("keydown", e => { if (e.key === "Enter") window.login(); });
 
-  // Auto-login
   if (sessionStorage.getItem("family_auth") === "1") {
     currentUser = sessionStorage.getItem("family_user") || "";
     showApp();
@@ -369,9 +466,7 @@
     sunday.setDate(today.getDate() - today.getDay());
     const days = [];
     for (let i = 0; i <= 4; i++) {
-      const d = new Date(sunday);
-      d.setDate(sunday.getDate() + i);
-      days.push(d);
+      const d = new Date(sunday); d.setDate(sunday.getDate() + i); days.push(d);
     }
     document.getElementById("week-label").textContent =
       `שבוע ${days[0].getDate()} ${HEBREW_MONTHS[days[0].getMonth()]} – ${days[4].getDate()} ${HEBREW_MONTHS[days[4].getMonth()]} ${days[4].getFullYear()}`;
@@ -387,11 +482,93 @@
     });
   }
 
+  // ── Categories ────────────────────────────────────────────
+  async function loadCategories() {
+    const snap = await getDoc(CAT_DOC);
+    if (snap.exists()) {
+      categories = snap.data().list || DEFAULT_CATS;
+    } else {
+      categories = [...DEFAULT_CATS];
+      await setDoc(CAT_DOC, { list: categories });
+    }
+    renderCategorySelect();
+    renderCatManager();
+  }
+
+  async function saveCategories() {
+    await setDoc(CAT_DOC, { list: categories });
+    renderCategorySelect();
+    renderCatManager();
+    renderList(currentItems);
+  }
+
+  function renderCategorySelect() {
+    const sel = document.getElementById("cat-select");
+    const cur = sel.value;
+    sel.innerHTML = `<option value="" disabled selected>-- בחר קטגוריה --</option>`;
+    categories.forEach(c => {
+      const opt = document.createElement("option");
+      opt.value = c; opt.textContent = c;
+      sel.appendChild(opt);
+    });
+    if (categories.includes(cur)) sel.value = cur;
+  }
+
+  function renderCatManager() {
+    const ul = document.getElementById("cat-list");
+    ul.innerHTML = "";
+    categories.forEach((c, i) => {
+      const li = document.createElement("li");
+      li.className = "cat-row";
+      li.innerHTML = `
+        <span class="cat-name-lbl">${escHtml(c)}</span>
+        <button class="cat-ord-btn" onclick="moveCat(${i},-1)" ${i===0?"disabled":""}>▲</button>
+        <button class="cat-ord-btn" onclick="moveCat(${i},1)"  ${i===categories.length-1?"disabled":""}>▼</button>
+        <button class="cat-del-btn" onclick="deleteCat(${i})" title="מחק קטגוריה">✕</button>`;
+      ul.appendChild(li);
+    });
+  }
+
+  window.moveCat = async function(i, dir) {
+    const j = i + dir;
+    if (j < 0 || j >= categories.length) return;
+    [categories[i], categories[j]] = [categories[j], categories[i]];
+    await saveCategories();
+  };
+
+  window.deleteCat = async function(i) {
+    if (!confirm(`למחוק את הקטגוריה "${categories[i]}"?`)) return;
+    categories.splice(i, 1);
+    await saveCategories();
+  };
+
+  window.addCategory = async function() {
+    const inp = document.getElementById("new-cat-input");
+    const name = inp.value.trim();
+    if (!name) { inp.focus(); return; }
+    if (categories.includes(name)) { inp.select(); return; }
+    categories.push(name);
+    await saveCategories();
+    inp.value = "";
+  };
+
+  window.toggleCatManager = function() {
+    const panel = document.getElementById("cat-manager");
+    panel.style.display = panel.style.display === "block" ? "none" : "block";
+  };
+
+  // ── View mode ─────────────────────────────────────────────
+  window.setView = function(mode) {
+    viewMode = mode;
+    document.getElementById("view-all-btn").classList.toggle("active", mode === "all");
+    document.getElementById("view-cat-btn").classList.toggle("active", mode === "cat");
+    renderList(currentItems);
+  };
+
   // ── Quick items ───────────────────────────────────────────
   function subscribeQuick() {
     window._unsub2 = onSnapshot(query(quickCol, orderBy("name")), snap => {
-      const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderQuick(items);
+      renderQuick(snap.docs.map(d => ({ id: d.id, ...d.data() })));
     });
   }
 
@@ -405,11 +582,19 @@
     items.forEach(item => {
       const chip = document.createElement("div");
       chip.className = "quick-chip";
+      chip.dataset.id = item.id;
       chip.innerHTML = `<span class="chip-name">${escHtml(item.name)}</span>
-        <button class="chip-del" onclick="deleteQuick(event,'${item.id}')" title="הסר מהמהירים">✕</button>`;
+        <span class="chip-cat-wrap">
+          <select class="chip-cat-select" onclick="event.stopPropagation()" onchange="changeQuickCat('${item.id}',this.value)">
+            ${categories.map(c => `<option value="${escHtml(c)}" ${c === item.category ? "selected" : ""}>${escHtml(c)}</option>`).join("")}
+          </select>
+        </span>
+        <button class="chip-del" onclick="deleteQuick(event,'${item.id}')">✕</button>`;
       chip.addEventListener("click", e => {
         if (e.target.classList.contains("chip-del")) return;
-        quickAddToList(item.name, chip);
+        if (e.target.classList.contains("chip-cat-select") || e.target.closest(".chip-cat-wrap")) return;
+        const cat = chip.querySelector(".chip-cat-select").value || categories[categories.length - 1] || "🛒 אחר";
+        quickAddToList(item.name, cat);
       });
       container.appendChild(chip);
     });
@@ -420,15 +605,27 @@
     await deleteDoc(doc(db, "quickItems", id));
   };
 
-  async function quickAddToList(name, chipEl) {
-    if (isDuplicate(name)) { showDuplicateMsg(chipEl); return; }
-    await addDoc(itemsCol, { name, who: currentUser, done: false, ts: Date.now() });
+  window.changeQuickCat = async function(id, newCat) {
+    await updateDoc(doc(db, "quickItems", id), { category: newCat });
+  };
+
+  async function quickAddToList(name, category) {
+    if (isDuplicate(name)) { showToast("⚠️ המוצר כבר ברשימה!"); return; }
+    await addDoc(itemsCol, { name, category: category || categories[categories.length-1], who: currentUser, done: false, ts: Date.now() });
   }
 
-  async function ensureQuickItem(name) {
+  async function ensureQuickItem(name, category) {
+    const defaultCat = categories[categories.length - 1];
+    const cat = category || defaultCat;
     const snap = await getDocs(quickCol);
-    const exists = snap.docs.some(d => d.data().name.trim() === name.trim());
-    if (!exists) await addDoc(quickCol, { name: name.trim(), ts: Date.now() });
+    const existing = snap.docs.find(d => d.data().name.trim().toLowerCase() === name.trim().toLowerCase());
+    if (existing) {
+      const existingCat = existing.data().category || defaultCat;
+      if (existingCat !== cat)
+        await updateDoc(doc(db, "quickItems", existing.id), { category: cat });
+    } else {
+      await addDoc(quickCol, { name: name.trim(), category: cat, ts: Date.now() });
+    }
   }
 
   // ── Shopping list ────────────────────────────────────────
@@ -448,51 +645,103 @@
   function renderList(items) {
     const ul = document.getElementById("shopping-list");
     ul.innerHTML = "";
+
     if (items.length === 0) {
       ul.innerHTML = '<div class="list-empty"><span>🛍️</span>הרשימה ריקה – הוסף פריטים!</div>';
       document.getElementById("list-count").textContent = "";
       return;
     }
-    items.forEach(item => {
-      const li = document.createElement("li");
-      li.className = "list-item" + (item.done ? " done" : "");
-      li.innerHTML = `
-        <button class="check-btn" onclick="toggleDone('${item.id}',${item.done})">${item.done ? "✓" : ""}</button>
-        <div class="item-info">
-          <div class="item-name">${escHtml(item.name)}</div>
-          ${item.who ? `<div class="item-who">ביקש/ה: ${escHtml(item.who)}</div>` : ""}
-        </div>
-        <button class="delete-btn" onclick="deleteItem('${item.id}')">✕</button>`;
-      ul.appendChild(li);
-    });
+
+    if (viewMode === "cat") {
+      // Group by category in user-defined order
+      const catOrder = [...categories, "ללא קטגוריה"];
+      const groups = {};
+      catOrder.forEach(c => groups[c] = []);
+      items.forEach(item => {
+        const c = item.category && groups[item.category] !== undefined ? item.category : "ללא קטגוריה";
+        if (!groups[c]) groups[c] = [];
+        groups[c].push(item);
+      });
+
+      catOrder.forEach(cat => {
+        const group = groups[cat];
+        if (!group || group.length === 0) return;
+        const header = document.createElement("li");
+        header.className = "cat-group-header";
+        const parts = cat.split(" ");
+        const emoji = parts[0].match(/\p{Emoji}/u) ? parts[0] : "📦";
+        const name  = parts[0].match(/\p{Emoji}/u) ? parts.slice(1).join(" ") : cat;
+        header.innerHTML = `<span class="cat-emoji-h">${emoji}</span>
+          <span class="cat-name-h">${escHtml(name)}</span>
+          <span class="cat-count-h">(${group.length})</span>`;
+        ul.appendChild(header);
+        group.forEach(item => ul.appendChild(makeListItem(item, false)));
+      });
+    } else {
+      items.forEach(item => ul.appendChild(makeListItem(item, true)));
+    }
+
     const done = items.filter(i => i.done).length;
     document.getElementById("list-count").textContent = `${done}/${items.length} פריטים נקנו`;
   }
 
+  function makeListItem(item, showCat) {
+    const li = document.createElement("li");
+    li.className = "list-item" + (item.done ? " done" : "");
+    const catOptions = categories.map(c =>
+      `<option value="${escHtml(c)}" ${c === item.category ? "selected" : ""}>${escHtml(c)}</option>`
+    ).join("");
+    const catBadge = showCat
+      ? `<select class="item-cat-select" onchange="changeCat('${item.id}',this.value)">${catOptions}</select>`
+      : `<span class="item-cat-badge">${escHtml(item.category || "")}</span>`;
+    li.innerHTML = `
+      <button class="check-btn" onclick="toggleDone('${item.id}',${item.done})">${item.done ? "✓" : ""}</button>
+      <div class="item-info">
+        <div class="item-name">${escHtml(item.name)}</div>
+        <div class="item-meta">${catBadge}${item.who ? `<span class="item-who">ביקש/ה: ${escHtml(item.who)}</span>` : ""}</div>
+      </div>
+      <button class="delete-btn" onclick="deleteItem('${item.id}')">✕</button>`;
+    return li;
+  }
+
   // ── CRUD ─────────────────────────────────────────────────
-  function showDuplicateMsg(el) {
-    el.setCustomValidity("המוצר כבר ברשימה");
-    el.reportValidity();
-    setTimeout(() => el.setCustomValidity(""), 2500);
+  function showToast(msg) {
+    const old = document.getElementById("dup-toast");
+    if (old) old.remove();
+    const t = document.createElement("div");
+    t.id = "dup-toast";
+    t.textContent = msg;
+    t.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);
+      background:#e74c3c;color:white;padding:10px 22px;border-radius:12px;
+      font-size:0.92rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,0.2);z-index:9999;`;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2500);
   }
 
   function isDuplicate(name) {
-    return currentItems.some(i => !i.done && i.name.trim() === name.trim());
+    return currentItems.some(i => !i.done && i.name.trim().toLowerCase() === name.trim().toLowerCase());
   }
 
   window.addItem = async function() {
     const nameEl = document.getElementById("item-input");
+    const catEl  = document.getElementById("cat-select");
     const name   = nameEl.value.trim();
+    const cat    = catEl.value;
     if (!name) { nameEl.focus(); return; }
-    if (isDuplicate(name)) { showDuplicateMsg(nameEl); return; }
+    if (!cat) { showToast("⚠️ יש לבחור קטגוריה!"); return; }
+    if (isDuplicate(name)) { showToast("⚠️ המוצר כבר ברשימה!"); return; }
     const btn = document.getElementById("add-btn");
     btn.disabled = true;
     try {
-      await addDoc(itemsCol, { name, who: currentUser, done: false, ts: Date.now() });
-      await ensureQuickItem(name);
+      await addDoc(itemsCol, { name, category: cat, who: currentUser, done: false, ts: Date.now() });
+      await ensureQuickItem(name, cat);
       nameEl.value = "";
       nameEl.focus();
     } finally { btn.disabled = false; }
+  };
+
+  window.changeCat = async function(id, newCat) {
+    await updateDoc(doc(db, "shoppingItems", id), { category: newCat });
   };
 
   window.toggleDone = async function(id, current) {
@@ -511,15 +760,16 @@
   };
 
   function escHtml(s) {
-    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
 
-  document.getElementById("item-input")
-    .addEventListener("keydown", e => { if (e.key === "Enter") window.addItem(); });
+  document.getElementById("item-input").addEventListener("keydown", e => { if (e.key === "Enter") window.addItem(); });
+  document.getElementById("new-cat-input").addEventListener("keydown", e => { if (e.key === "Enter") window.addCategory(); });
 
   // ── Init ─────────────────────────────────────────────────
-  function init() {
+  async function init() {
     renderWeek();
+    await loadCategories();
     subscribeList();
     subscribeQuick();
   }
