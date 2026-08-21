@@ -1,0 +1,30 @@
+name: Pre-market Gap + News Scan
+
+on:
+  schedule:
+    # Once/day, 13:15 UTC = 9:15 AM ET (EDT) — 15 min before the open, giving
+    # the pre-market session maximum time to develop. During EST (winter),
+    # this lands at 8:15 AM ET instead — still inside the pre-market window,
+    # just earlier.
+    - cron: "15 13 * * 1-5"
+  workflow_dispatch: {}   # allows manual "Run workflow" trigger for testing
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install yfinance requests
+
+      - name: Run scanner
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+        run: python premarket_gap_news_scanner.py
