@@ -27,4 +27,4 @@ jobs:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
-        run: python premarket_gap_news_scanner.py
+        run: python premarket_scanner/premarket_gap_news_scanner.py
