@@ -107,7 +107,6 @@
       transition: all 0.15s;
     }
     .quick-chip:hover { background: #e0e5ff; border-color: #667eea; }
-    .quick-chip .chip-cat { font-size: 0.7rem; color: #aaa; }
     .chip-cat-wrap { display: inline-flex; align-items: center; }
     .chip-cat-select {
       font-size: 0.68rem; color: #666; border: 1px solid #dde;
@@ -123,14 +122,14 @@
 
     /* ADD FORM */
     .add-form { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
-    .add-form input, .add-form select {
+    .add-form input[type=text], .add-form select {
       padding: 10px 13px; border: 2px solid #e0e0e0; border-radius: 11px;
-      font-size: 0.9rem; outline: none; transition: border-color 0.2s;
-      background: white;
+      font-size: 0.9rem; outline: none; transition: border-color 0.2s; background: white;
     }
-    .add-form input  { flex: 2; min-width: 120px; text-align: right; direction: rtl; }
+    #item-input { flex: 2; min-width: 120px; text-align: right; direction: rtl; }
+    #qty-input  { width: 72px; min-width: 72px; text-align: center; direction: ltr; flex: none; }
     .add-form select { flex: 1; min-width: 110px; cursor: pointer; color: #555; }
-    .add-form input:focus, .add-form select:focus { border-color: #667eea; }
+    .add-form input[type=text]:focus, .add-form select:focus { border-color: #667eea; }
     .add-form input::placeholder { color: #bbb; }
     #add-btn {
       padding: 10px 18px;
@@ -141,7 +140,7 @@
     #add-btn:hover { opacity: 0.9; }
     #add-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* VIEW TOGGLE + CATEGORY MANAGEMENT */
+    /* VIEW TOGGLE */
     .toolbar {
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
@@ -149,20 +148,16 @@
     .view-toggle { display: flex; gap: 6px; }
     .view-btn {
       padding: 6px 14px; border: 2px solid #e0e0e0; border-radius: 20px;
-      background: white; font-size: 0.8rem; color: #888; cursor: pointer;
-      transition: all 0.15s;
+      background: white; font-size: 0.8rem; color: #888; cursor: pointer; transition: all 0.15s;
     }
-    .view-btn.active {
-      border-color: #667eea; background: #667eea; color: white;
-    }
+    .view-btn.active { border-color: #667eea; background: #667eea; color: white; }
     #manage-cat-btn {
       padding: 6px 13px; border: 1.5px solid #e0e0e0; border-radius: 20px;
-      background: white; font-size: 0.8rem; color: #999; cursor: pointer;
-      transition: all 0.15s;
+      background: white; font-size: 0.8rem; color: #999; cursor: pointer; transition: all 0.15s;
     }
     #manage-cat-btn:hover { border-color: #667eea; color: #667eea; }
 
-    /* CATEGORY MANAGER PANEL */
+    /* CATEGORY MANAGER */
     #cat-manager {
       display: none; margin-bottom: 16px;
       background: #f8f9ff; border-radius: 14px; padding: 14px 16px;
@@ -175,13 +170,11 @@
       padding: 7px 10px; background: white; border-radius: 10px;
       margin-bottom: 5px; border: 1.5px solid #eee;
     }
-    .cat-emoji { font-size: 1rem; width: 22px; text-align: center; }
     .cat-name-lbl { flex: 1; font-size: 0.88rem; color: #333; }
     .cat-ord-btn {
-      width: 26px; height: 26px; border: 1.5px solid #e0e0e0;
-      border-radius: 7px; background: white; cursor: pointer;
-      font-size: 0.8rem; color: #888; display: flex; align-items: center; justify-content: center;
-      transition: all 0.15s;
+      width: 26px; height: 26px; border: 1.5px solid #e0e0e0; border-radius: 7px;
+      background: white; cursor: pointer; font-size: 0.8rem; color: #888;
+      display: flex; align-items: center; justify-content: center; transition: all 0.15s;
     }
     .cat-ord-btn:hover { border-color: #667eea; color: #667eea; }
     .cat-del-btn {
@@ -197,8 +190,7 @@
     .add-cat-row input:focus { border-color: #667eea; }
     .add-cat-row button {
       padding: 7px 14px; background: #667eea; color: white;
-      border: none; border-radius: 9px; font-size: 0.85rem;
-      cursor: pointer; white-space: nowrap;
+      border: none; border-radius: 9px; font-size: 0.85rem; cursor: pointer; white-space: nowrap;
     }
 
     /* LIST */
@@ -206,11 +198,9 @@
     .list-empty { text-align: center; padding: 32px 20px; color: #ccc; font-size: 0.92rem; }
     .list-empty span { font-size: 2rem; display: block; margin-bottom: 8px; }
 
-    /* Category group header */
     .cat-group-header {
       display: flex; align-items: center; gap: 8px;
-      padding: 8px 4px; margin: 10px 0 4px;
-      border-bottom: 2px solid #f0f0f0;
+      padding: 8px 4px; margin: 10px 0 4px; border-bottom: 2px solid #f0f0f0;
     }
     .cat-group-header .cat-emoji-h { font-size: 1.1rem; }
     .cat-group-header .cat-name-h  { font-size: 0.85rem; font-weight: 700; color: #888; }
@@ -231,9 +221,8 @@
     .list-item.done .item-name { text-decoration: line-through; color: #aaa; }
 
     .check-btn {
-      width: 25px; height: 25px; min-width: 25px;
-      border-radius: 50%; border: 2.5px solid #667eea;
-      background: white; cursor: pointer;
+      width: 25px; height: 25px; min-width: 25px; border-radius: 50%;
+      border: 2.5px solid #667eea; background: white; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       font-size: 0.72rem; color: white; transition: all 0.2s;
     }
@@ -241,6 +230,11 @@
 
     .item-info { flex: 1; }
     .item-name { font-size: 0.94rem; color: #333; font-weight: 500; }
+    .item-qty-badge {
+      display: inline-block; padding: 1px 7px; background: #e8f5e9;
+      border-radius: 8px; font-size: 0.72rem; color: #388e3c;
+      font-weight: 600; margin-right: 5px;
+    }
     .item-meta { font-size: 0.73rem; color: #bbb; margin-top: 2px; }
     .item-cat-select {
       font-size: 0.7rem; color: #666; border: 1px solid #dde; border-radius: 8px;
@@ -249,28 +243,38 @@
     }
     .item-who { margin-right: 6px; }
     .item-cat-badge {
-      display: inline-block; padding: 2px 8px;
-      background: #f0f2ff; border-radius: 10px;
-      font-size: 0.7rem; color: #888; margin-right: 5px;
+      display: inline-block; padding: 2px 8px; background: #f0f2ff;
+      border-radius: 10px; font-size: 0.7rem; color: #888; margin-right: 5px;
     }
 
     .delete-btn {
       padding: 4px 9px; background: none; border: none;
-      color: #ddd; font-size: 0.95rem; cursor: pointer; border-radius: 7px;
-      transition: all 0.2s;
+      color: #ddd; font-size: 0.95rem; cursor: pointer; border-radius: 7px; transition: all 0.2s;
     }
     .delete-btn:hover { background: #fff0f0; color: #e74c3c; }
 
+    /* FOOTER */
     .list-footer {
       display: flex; justify-content: space-between; align-items: center;
       margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0;
+      flex-wrap: wrap; gap: 8px;
     }
     .list-footer span { color: #aaa; font-size: 0.8rem; }
+    .footer-btns { display: flex; gap: 8px; flex-wrap: wrap; }
     #clear-done-btn {
       padding: 6px 12px; background: none; border: 1px solid #e0e0e0;
       border-radius: 9px; color: #999; font-size: 0.77rem; cursor: pointer; transition: all 0.2s;
     }
     #clear-done-btn:hover { background: #fff0f0; border-color: #e74c3c; color: #e74c3c; }
+
+    /* WHATSAPP */
+    #whatsapp-btn {
+      padding: 6px 14px; background: #25D366; border: none;
+      border-radius: 9px; color: white; font-size: 0.77rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px;
+    }
+    #whatsapp-btn:hover { background: #1ebe5a; }
+    #whatsapp-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
     .sync-dot {
       display: inline-block; width: 7px; height: 7px; border-radius: 50%;
@@ -279,10 +283,8 @@
     .sync-dot.on { background: #2ecc71; }
 
     @media (max-width: 500px) {
-      .days-grid { gap: 4px; }
-      .day-box { padding: 8px 2px; }
-      .day-name { font-size: 0.66rem; }
       .add-form select { min-width: 90px; }
+      #qty-input { width: 58px; min-width: 58px; }
     }
   </style>
 </head>
@@ -318,12 +320,10 @@
     </div>
   </div>
 
-  <!-- Family image -->
   <div class="family-img-card">
     <img src="family.jpg" alt="המשפחה שלנו">
   </div>
 
-  <!-- Shopping -->
   <div class="card">
     <h2 class="big">📝 רשימת קניות</h2>
 
@@ -339,9 +339,10 @@
       <div class="quick-chips" id="quick-chips"></div>
     </div>
 
-    <!-- Add form -->
+    <!-- Add form — name | כמות (optional) | category | button -->
     <div class="add-form">
       <input type="text" id="item-input" placeholder="מוצר חדש..." maxlength="80">
+      <input type="text" id="qty-input" placeholder="כמות" maxlength="15" title="כמות (לא חובה)">
       <select id="cat-select"></select>
       <button id="add-btn" onclick="addItem()">+ הוסף</button>
     </div>
@@ -366,9 +367,19 @@
     </div>
 
     <ul id="shopping-list"></ul>
+
     <div class="list-footer">
       <span id="list-count"></span>
-      <button id="clear-done-btn" onclick="clearDone()">מחק שנקנו ✓</button>
+      <div class="footer-btns">
+        <button id="whatsapp-btn" onclick="shareWhatsApp()" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white" style="flex-shrink:0">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.555 4.122 1.528 5.855L.057 23.428a.5.5 0 0 0 .609.61l5.651-1.484A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.027-1.381l-.36-.214-3.733.98.997-3.648-.234-.375A9.818 9.818 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/>
+          </svg>
+          שלח לוואטסאפ
+        </button>
+        <button id="clear-done-btn" onclick="clearDone()">מחק שנקנו ✓</button>
+      </div>
     </div>
   </div>
 </div>
@@ -414,11 +425,11 @@
   let selectedMember = "";
   let currentItems   = [];
   let categories     = [...DEFAULT_CATS];
-  let viewMode       = "cat"; // "all" | "cat"
-  let quickSort      = "cat"; // "cat" | "abc"
+  let viewMode       = "cat";
+  let quickSort      = "cat";
   let currentQuick   = [];
 
-  // ── Auth ─────────────────────────────────────────────────
+  // ── Auth ──────────────────────────────────────────────────
   window.selectMember = function(btn, name) {
     document.querySelectorAll(".member-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
@@ -452,7 +463,6 @@
     document.querySelectorAll(".member-btn").forEach(b => b.classList.remove("active"));
     if (window._unsub1) window._unsub1();
     if (window._unsub2) window._unsub2();
-    if (window._unsub3) window._unsub3();
   };
 
   document.getElementById("password-input").addEventListener("keydown", e => { if (e.key === "Enter") window.login(); });
@@ -601,7 +611,6 @@
       return;
     }
 
-    // sort by category order
     const catOrder = [...categories, "ללא קטגוריה"];
     const groups = {};
     catOrder.forEach(c => groups[c] = []);
@@ -638,7 +647,7 @@
 
   async function quickAddToList(name, category) {
     if (isDuplicate(name)) { showToast("⚠️ המוצר כבר ברשימה!"); return; }
-    await addDoc(itemsCol, { name, category: category || categories[categories.length-1], who: currentUser, done: false, ts: Date.now() });
+    await addDoc(itemsCol, { name, qty: "", category: category || categories[categories.length-1], who: currentUser, done: false, ts: Date.now() });
   }
 
   async function ensureQuickItem(name, category) {
@@ -655,7 +664,7 @@
     }
   }
 
-  // ── Shopping list ────────────────────────────────────────
+  // ── Shopping list ─────────────────────────────────────────
   function subscribeList() {
     const dot = document.getElementById("sync-dot");
     const q   = query(itemsCol, orderBy("ts", "desc"));
@@ -664,9 +673,15 @@
         dot.className = "sync-dot on";
         currentItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         renderList(currentItems);
+        updateWhatsAppBtn();
       },
       err => { dot.className = "sync-dot"; console.error(err); }
     );
+  }
+
+  function updateWhatsAppBtn() {
+    const remaining = currentItems.filter(i => !i.done);
+    document.getElementById("whatsapp-btn").disabled = remaining.length === 0;
   }
 
   function renderList(items) {
@@ -680,7 +695,6 @@
     }
 
     if (viewMode === "cat") {
-      // Group by category in user-defined order
       const catOrder = [...categories, "ללא קטגוריה"];
       const groups = {};
       catOrder.forEach(c => groups[c] = []);
@@ -689,7 +703,6 @@
         if (!groups[c]) groups[c] = [];
         groups[c].push(item);
       });
-
       catOrder.forEach(cat => {
         const group = groups[cat];
         if (!group || group.length === 0) return;
@@ -721,25 +734,56 @@
     const catBadge = showCat
       ? `<select class="item-cat-select" onchange="changeCat('${item.id}',this.value)">${catOptions}</select>`
       : `<span class="item-cat-badge">${escHtml(item.category || "")}</span>`;
+    const qtyBadge = item.qty ? `<span class="item-qty-badge">× ${escHtml(item.qty)}</span>` : "";
     li.innerHTML = `
       <button class="check-btn" onclick="toggleDone('${item.id}',${item.done})">${item.done ? "✓" : ""}</button>
       <div class="item-info">
-        <div class="item-name">${escHtml(item.name)}</div>
+        <div class="item-name">${escHtml(item.name)}${qtyBadge}</div>
         <div class="item-meta">${catBadge}${item.who ? `<span class="item-who">ביקש/ה: ${escHtml(item.who)}</span>` : ""}</div>
       </div>
       <button class="delete-btn" onclick="deleteItem('${item.id}')">✕</button>`;
     return li;
   }
 
-  // ── CRUD ─────────────────────────────────────────────────
-  function showToast(msg) {
+  // ── WhatsApp share ────────────────────────────────────────
+  window.shareWhatsApp = function() {
+    const remaining = currentItems.filter(i => !i.done);
+    if (remaining.length === 0) { showToast("✅ כל הפריטים נקנו!", "#2ecc71"); return; }
+
+    const catOrder = [...categories, "ללא קטגוריה"];
+    const groups = {};
+    catOrder.forEach(c => groups[c] = []);
+    remaining.forEach(item => {
+      const c = item.category && groups[item.category] !== undefined ? item.category : "ללא קטגוריה";
+      if (!groups[c]) groups[c] = [];
+      groups[c].push(item);
+    });
+
+    let text = "🛒 *רשימת קניות — מה שנשאר לקנות*\n\n";
+    catOrder.forEach(cat => {
+      const group = groups[cat];
+      if (!group || group.length === 0) return;
+      text += `*${cat}*\n`;
+      group.forEach(item => {
+        const qty = item.qty ? ` (${item.qty})` : "";
+        text += `• ${item.name}${qty}\n`;
+      });
+      text += "\n";
+    });
+    text += `_נשלח מרשימת הקניות המשפחתית 🏠_`;
+
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
+  // ── CRUD ──────────────────────────────────────────────────
+  function showToast(msg, color) {
     const old = document.getElementById("dup-toast");
     if (old) old.remove();
     const t = document.createElement("div");
     t.id = "dup-toast";
     t.textContent = msg;
     t.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);
-      background:#e74c3c;color:white;padding:10px 22px;border-radius:12px;
+      background:${color||"#e74c3c"};color:white;padding:10px 22px;border-radius:12px;
       font-size:0.92rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,0.2);z-index:9999;`;
     document.body.appendChild(t);
     setTimeout(() => t.remove(), 2500);
@@ -751,18 +795,21 @@
 
   window.addItem = async function() {
     const nameEl = document.getElementById("item-input");
+    const qtyEl  = document.getElementById("qty-input");
     const catEl  = document.getElementById("cat-select");
     const name   = nameEl.value.trim();
+    const qty    = qtyEl.value.trim();
     const cat    = catEl.value;
     if (!name) { nameEl.focus(); return; }
-    if (!cat) { showToast("⚠️ יש לבחור קטגוריה!"); return; }
+    if (!cat)  { showToast("⚠️ יש לבחור קטגוריה!"); return; }
     if (isDuplicate(name)) { showToast("⚠️ המוצר כבר ברשימה!"); return; }
     const btn = document.getElementById("add-btn");
     btn.disabled = true;
     try {
-      await addDoc(itemsCol, { name, category: cat, who: currentUser, done: false, ts: Date.now() });
+      await addDoc(itemsCol, { name, qty, category: cat, who: currentUser, done: false, ts: Date.now() });
       await ensureQuickItem(name, cat);
       nameEl.value = "";
+      qtyEl.value  = "";
       nameEl.focus();
     } finally { btn.disabled = false; }
   };
@@ -791,9 +838,10 @@
   }
 
   document.getElementById("item-input").addEventListener("keydown", e => { if (e.key === "Enter") window.addItem(); });
+  document.getElementById("qty-input").addEventListener("keydown",  e => { if (e.key === "Enter") window.addItem(); });
   document.getElementById("new-cat-input").addEventListener("keydown", e => { if (e.key === "Enter") window.addCategory(); });
 
-  // ── Init ─────────────────────────────────────────────────
+  // ── Init ──────────────────────────────────────────────────
   async function init() {
     await loadCategories();
     subscribeList();
