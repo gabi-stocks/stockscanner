@@ -58,7 +58,6 @@
       display: flex; justify-content: space-between; align-items: center;
     }
     .header h1 { font-size: 1.35rem; color: #333; }
-    .header p  { color: #888; font-size: 0.8rem; margin-top: 3px; }
     .header-right { display: flex; align-items: center; gap: 8px; }
     .user-badge {
       padding: 5px 13px; background: linear-gradient(135deg,#667eea,#764ba2);
@@ -74,10 +73,8 @@
       background: white; border-radius: 20px; padding: 20px 24px;
       margin-bottom: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     }
-    .card h2 { color: #555; font-size: 0.92rem; margin-bottom: 12px; font-weight: 600; }
     .card h2.big { color: #333; font-size: 1.1rem; margin-bottom: 16px; }
 
-    /* FAMILY IMAGE */
     .family-img-card {
       background: white; border-radius: 20px; overflow: hidden;
       margin-bottom: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
@@ -103,8 +100,7 @@
     .quick-chip {
       display: inline-flex; align-items: center; gap: 4px;
       padding: 5px 10px; background: #f0f2ff; border: 1.5px solid #d0d8ff;
-      border-radius: 20px; font-size: 0.82rem; color: #555; cursor: pointer;
-      transition: all 0.15s;
+      border-radius: 20px; font-size: 0.82rem; color: #555; cursor: pointer; transition: all 0.15s;
     }
     .quick-chip:hover { background: #e0e5ff; border-color: #667eea; }
     .chip-cat-wrap { display: inline-flex; align-items: center; }
@@ -132,15 +128,14 @@
     .add-form input[type=text]:focus, .add-form select:focus { border-color: #667eea; }
     .add-form input::placeholder { color: #bbb; }
     #add-btn {
-      padding: 10px 18px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 10px 18px; background: linear-gradient(135deg, #667eea, #764ba2);
       color: white; border: none; border-radius: 11px;
       font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap;
     }
     #add-btn:hover { opacity: 0.9; }
     #add-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* VIEW TOGGLE */
+    /* TOOLBAR */
     .toolbar {
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
@@ -159,16 +154,14 @@
 
     /* CATEGORY MANAGER */
     #cat-manager {
-      display: none; margin-bottom: 16px;
-      background: #f8f9ff; border-radius: 14px; padding: 14px 16px;
-      border: 1.5px solid #e0e5ff;
+      display: none; margin-bottom: 16px; background: #f8f9ff;
+      border-radius: 14px; padding: 14px 16px; border: 1.5px solid #e0e5ff;
     }
     #cat-manager h4 { font-size: 0.85rem; color: #667eea; margin-bottom: 10px; }
     .cat-list { list-style: none; margin-bottom: 10px; }
     .cat-row {
-      display: flex; align-items: center; gap: 8px;
-      padding: 7px 10px; background: white; border-radius: 10px;
-      margin-bottom: 5px; border: 1.5px solid #eee;
+      display: flex; align-items: center; gap: 8px; padding: 7px 10px;
+      background: white; border-radius: 10px; margin-bottom: 5px; border: 1.5px solid #eee;
     }
     .cat-name-lbl { flex: 1; font-size: 0.88rem; color: #333; }
     .cat-ord-btn {
@@ -228,23 +221,30 @@
     }
     .list-item.done .check-btn { background: #667eea; border-color: #667eea; }
 
-    .item-info { flex: 1; }
+    .item-info { flex: 1; min-width: 0; }
     .item-name { font-size: 0.94rem; color: #333; font-weight: 500; }
-    .item-qty-badge {
-      display: inline-block; padding: 1px 7px; background: #e8f5e9;
-      border-radius: 8px; font-size: 0.72rem; color: #388e3c;
-      font-weight: 600; margin-right: 5px;
+    .item-meta { font-size: 0.73rem; color: #bbb; margin-top: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+
+    /* inline qty editor on existing item */
+    .item-qty-wrap { display: inline-flex; align-items: center; gap: 3px; }
+    .item-qty-input {
+      width: 60px; padding: 2px 6px; border: 1.5px solid #c8e6c9;
+      border-radius: 8px; font-size: 0.75rem; color: #388e3c; font-weight: 600;
+      background: #e8f5e9; text-align: center; direction: ltr; outline: none;
+      transition: border-color 0.2s;
     }
-    .item-meta { font-size: 0.73rem; color: #bbb; margin-top: 2px; }
+    .item-qty-input:focus { border-color: #388e3c; background: #f1f8f2; }
+    .item-qty-input::placeholder { color: #a5d6a7; font-weight: 400; }
+    .item-qty-label { font-size: 0.7rem; color: #81c784; }
+
     .item-cat-select {
       font-size: 0.7rem; color: #666; border: 1px solid #dde; border-radius: 8px;
-      padding: 2px 5px; background: #f0f2ff; margin-left: 5px; cursor: pointer;
-      max-width: 140px; direction: rtl;
+      padding: 2px 5px; background: #f0f2ff; cursor: pointer; max-width: 140px; direction: rtl;
     }
-    .item-who { margin-right: 6px; }
+    .item-who { color: #bbb; }
     .item-cat-badge {
       display: inline-block; padding: 2px 8px; background: #f0f2ff;
-      border-radius: 10px; font-size: 0.7rem; color: #888; margin-right: 5px;
+      border-radius: 10px; font-size: 0.7rem; color: #888;
     }
 
     .delete-btn {
@@ -285,6 +285,7 @@
     @media (max-width: 500px) {
       .add-form select { min-width: 90px; }
       #qty-input { width: 58px; min-width: 58px; }
+      .item-qty-input { width: 50px; }
     }
   </style>
 </head>
@@ -339,7 +340,7 @@
       <div class="quick-chips" id="quick-chips"></div>
     </div>
 
-    <!-- Add form — name | כמות (optional) | category | button -->
+    <!-- Add form -->
     <div class="add-form">
       <input type="text" id="item-input" placeholder="מוצר חדש..." maxlength="80">
       <input type="text" id="qty-input" placeholder="כמות" maxlength="15" title="כמות (לא חובה)">
@@ -728,20 +729,49 @@
   function makeListItem(item, showCat) {
     const li = document.createElement("li");
     li.className = "list-item" + (item.done ? " done" : "");
+
     const catOptions = categories.map(c =>
       `<option value="${escHtml(c)}" ${c === item.category ? "selected" : ""}>${escHtml(c)}</option>`
     ).join("");
     const catBadge = showCat
       ? `<select class="item-cat-select" onchange="changeCat('${item.id}',this.value)">${catOptions}</select>`
       : `<span class="item-cat-badge">${escHtml(item.category || "")}</span>`;
-    const qtyBadge = item.qty ? `<span class="item-qty-badge">× ${escHtml(item.qty)}</span>` : "";
+    const whoSpan = item.who ? `<span class="item-who">ביקש/ה: ${escHtml(item.who)}</span>` : "";
+
     li.innerHTML = `
       <button class="check-btn" onclick="toggleDone('${item.id}',${item.done})">${item.done ? "✓" : ""}</button>
       <div class="item-info">
-        <div class="item-name">${escHtml(item.name)}${qtyBadge}</div>
-        <div class="item-meta">${catBadge}${item.who ? `<span class="item-who">ביקש/ה: ${escHtml(item.who)}</span>` : ""}</div>
+        <div class="item-name">${escHtml(item.name)}</div>
+        <div class="item-meta">
+          ${catBadge}
+          <span class="item-qty-wrap">
+            <span class="item-qty-label">כמות:</span>
+            <input class="item-qty-input"
+              type="text" maxlength="15"
+              placeholder="הוסף"
+              value="${escHtml(item.qty || '')}"
+              data-id="${item.id}"
+              data-orig="${escHtml(item.qty || '')}">
+          </span>
+          ${whoSpan}
+        </div>
       </div>
       <button class="delete-btn" onclick="deleteItem('${item.id}')">✕</button>`;
+
+    // save on blur or Enter — only if changed
+    const qtyEl = li.querySelector(".item-qty-input");
+    const saveQty = async () => {
+      const newVal = qtyEl.value.trim();
+      const orig   = qtyEl.dataset.orig;
+      if (newVal === orig) return;
+      qtyEl.dataset.orig = newVal;
+      await updateDoc(doc(db, "shoppingItems", item.id), { qty: newVal });
+    };
+    qtyEl.addEventListener("blur",  saveQty);
+    qtyEl.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); qtyEl.blur(); } });
+    // stop list re-render from blurring while typing
+    qtyEl.addEventListener("click", e => e.stopPropagation());
+
     return li;
   }
 
