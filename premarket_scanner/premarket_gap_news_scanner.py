@@ -61,6 +61,13 @@ NASDAQ_LISTED_URL = "https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.tx
 # a run and checked you're not getting rate-limited.
 UNIVERSE_LIMIT = 800
 
+# Pause after EVERY ticker request to stay under Yahoo's rate limit.
+PER_TICKER_SLEEP = 0.4
+
+# Total time budget for the scan loop. When exceeded, the scan stops and a
+# partial report is emailed (the workflow itself has timeout-minutes: 25).
+SCAN_TIME_BUDGET_SEC = 15 * 60
+
 # Keyword rules per catalyst category (case-insensitive, matched against
 # news title + summary). Expand these lists as you see misses.
 NEWS_CATEGORIES = {
@@ -180,15 +187,24 @@ def get_matching_news(ticker, max_items=10):
     return matches
 
 
-def scan():
+def scan(max_seconds=SCAN_TIME_BUDGET_SEC):
+    """Returns (candidates, checked_count, total_count)."""
     universe = fetch_nasdaq_universe()
     candidates = []
+    start = time.time()
+    checked = 0
 
     for i, ticker in enumerate(universe):
+        if time.time() - start > max_seconds:
+            log.warning(f"Time budget hit at {i}/{len(universe)} - sending partial report")
+            break
         if i and i % 100 == 0:
-            log.info(f"...checked {i}/{len(universe)}")
+            log.info(f"...checked {i}/{len(universe)} ({time.time() - start:.0f}s)")
 
         snap = get_premarket_snapshot(ticker)
+        checked = i + 1
+        time.sleep(PER_TICKER_SLEEP)   # throttle every ticker, not only matches
+
         if not snap:
             continue
         if snap["gap_pct"] < GAP_THRESHOLD_PCT:
@@ -205,15 +221,18 @@ def scan():
         log.info(f"MATCH: {ticker} gap={snap['gap_pct']:.1f}% cap=${snap['market_cap']/1e6:.0f}M "
                   f"categories={[c for m in news_matches for c in m['categories']]}")
 
-        time.sleep(0.3)
-
-    return candidates
+    return candidates, checked, len(universe)
 
 
 # ------------------------------ EMAIL -------------------------------------
 
-def build_html_report(candidates):
+def build_html_report(candidates, checked=None, total=None):
     now_str = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M")
+
+    coverage = ""
+    if checked is not None and total and checked < total:
+        coverage = (f"<p style='color:#b45309;'><b>דוח חלקי:</b> נבדקו {checked} מתוך {total} "
+                    f"מניות (הסריקה נעצרה בגלל מגבלת זמן).</p>")
 
     if not candidates:
         rows = "<p>לא נמצאו מניות שעומדות בקריטריונים הבוקר.</p>"
@@ -245,6 +264,7 @@ def build_html_report(candidates):
         <h2>סריקת קפיצות טרום-מסחר — {now_str}</h2>
         <p>קריטריונים: gap ≥ {GAP_THRESHOLD_PCT}% | שווי שוק ≥ ${MIN_MARKET_CAP/1e6:.0f}M |
            חדשות: FDA/רגולציה, חוזה חדש, פריצת דרך טכנולוגית, תוצאות מחקר מוצלחות</p>
+        {coverage}
         {rows}
     </body>
     </html>
@@ -263,7 +283,7 @@ def send_email(html_body, subject="סריקת קפיצות טרום-מסחר - N
     msg["To"] = MAIL_TO
     msg.attach(MIMEText(html_body, "html", "utf-8"))
 
-    with smtplib.SMTP("smtp.gmail.com", 587) as server:
+    with smtplib.SMTP("smtp.gmail.com", 587, timeout=30) as server:
         server.starttls()
         server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
         server.sendmail(GMAIL_USER, MAIL_TO.split(","), msg.as_string())
@@ -275,7 +295,7 @@ def send_email(html_body, subject="סריקת קפיצות טרום-מסחר - N
 
 if __name__ == "__main__":
     log.info("Starting pre-market gap + news scan...")
-    results = scan()
-    html = build_html_report(results)
+    results, checked, total = scan()
+    html = build_html_report(results, checked, total)
     send_email(html)
-    log.info(f"Done. {len(results)} candidate(s) found.")
+    log.info(f"Done. {len(results)} candidate(s) found ({checked}/{total} checked).")

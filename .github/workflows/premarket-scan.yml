@@ -12,6 +12,8 @@ on:
 jobs:
   scan:
     runs-on: ubuntu-latest
+    # Fail fast if something hangs (default is 360 min -> "All jobs were cancelled")
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
