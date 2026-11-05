@@ -115,6 +115,60 @@
     }
     .chip-del:hover { color: #e74c3c; }
     .quick-empty { color: #ccc; font-size: 0.8rem; }
+    .quick-chip.in-list { background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32; }
+    .quick-chip.in-list .chip-name::before { content: "✓ "; font-weight: 700; }
+
+    /* LIST CARD TITLE */
+    .list-title {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+      padding-bottom: 10px; border-bottom: 3px solid #667eea;
+    }
+    .list-title h2 { font-size: 1.25rem; color: #333; margin: 0; }
+    .list-title .count-pill {
+      background: linear-gradient(135deg,#667eea,#764ba2); color: white;
+      border-radius: 14px; padding: 2px 11px; font-size: 0.8rem; font-weight: 700;
+    }
+    .select-title { font-size: 1.1rem; color: #333; margin-bottom: 14px; }
+
+    /* ACCORDION (categories to choose from) */
+    .acc { border: 1.5px solid #e6e9ff; border-radius: 13px; margin-bottom: 8px; overflow: hidden; background: #fbfbff; }
+    .acc-head {
+      width: 100%; display: flex; align-items: center; gap: 8px;
+      padding: 12px 14px; background: none; border: none; cursor: pointer;
+      font-size: 0.95rem; color: #444; font-weight: 600; text-align: right; font-family: inherit;
+    }
+    .acc-head:hover { background: #f1f3ff; }
+    .acc-name { flex: 1; }
+    .acc-count { font-size: 0.75rem; color: #999; font-weight: 500; }
+    .acc-inlist { font-size: 0.72rem; color: #2e7d32; background: #e8f5e9; border-radius: 10px; padding: 1px 8px; }
+    .acc-arrow { color: #667eea; transition: transform 0.2s; font-size: 0.8rem; }
+    .acc.open .acc-arrow { transform: rotate(180deg); }
+    .acc-body { display: none; padding: 4px 12px 12px; flex-wrap: wrap; gap: 6px; }
+    .acc.open .acc-body { display: flex; }
+
+    /* MY RECENT */
+    #recent-btn {
+      width: 100%; padding: 11px 14px; margin-bottom: 14px;
+      background: #fff8e6; border: 1.5px solid #ffd77a; border-radius: 13px;
+      color: #8a6100; font-size: 0.92rem; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; gap: 8px; font-family: inherit;
+    }
+    #recent-btn:hover { background: #fff1cc; }
+    #recent-btn .acc-arrow { margin-right: auto; color: #c48a00; }
+    #recent-btn.open .acc-arrow { transform: rotate(180deg); }
+    #recent-panel {
+      display: none; margin: -6px 0 16px; padding: 12px;
+      background: #fffcf3; border: 1.5px solid #ffe7a8; border-radius: 13px;
+    }
+    #recent-panel.open { display: block; }
+    #recent-panel .hint { font-size: 0.75rem; color: #a08440; margin-bottom: 8px; }
+    .recent-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .recent-chip {
+      padding: 7px 12px; border-radius: 20px; font-size: 0.85rem; cursor: pointer;
+      background: white; border: 1.5px solid #ffd77a; color: #6b4d00; font-family: inherit;
+    }
+    .recent-chip:hover { background: #fff1cc; }
+    .recent-chip.in-list { background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32; cursor: default; }
 
     /* ADD FORM */
     .add-form { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
@@ -146,11 +200,6 @@
       background: white; font-size: 0.8rem; color: #888; cursor: pointer; transition: all 0.15s;
     }
     .view-btn.active { border-color: #667eea; background: #667eea; color: white; }
-    #manage-cat-btn {
-      padding: 6px 13px; border: 1.5px solid #e0e0e0; border-radius: 20px;
-      background: white; font-size: 0.8rem; color: #999; cursor: pointer; transition: all 0.15s;
-    }
-    #manage-cat-btn:hover { border-color: #667eea; color: #667eea; }
 
     /* CATEGORY MANAGER */
     #cat-manager {
@@ -321,49 +370,17 @@
     </div>
   </div>
 
-  <div class="family-img-card">
-    <img src="family.jpg" alt="המשפחה שלנו">
-  </div>
-
+  <!-- ① SHOPPING LIST (selected items) -->
   <div class="card">
-    <h2 class="big">📝 רשימת קניות</h2>
-
-    <!-- Quick items -->
-    <div class="quick-section">
-      <div class="quick-header">
-        <h3>⚡ מוצרים מהירים — לחץ להוספה</h3>
-        <div class="quick-sort-btns">
-          <button class="qsort-btn active" id="qsort-cat" onclick="setQuickSort('cat')">📦 קטגוריה</button>
-          <button class="qsort-btn" id="qsort-abc" onclick="setQuickSort('abc')">א-ב</button>
-        </div>
-      </div>
-      <div class="quick-chips" id="quick-chips"></div>
+    <div class="list-title">
+      <h2>🛒 מה צריך לקנות</h2>
+      <span class="count-pill" id="list-pill">0</span>
     </div>
 
-    <!-- Add form -->
-    <div class="add-form">
-      <input type="text" id="item-input" placeholder="מוצר חדש..." maxlength="80">
-      <input type="text" id="qty-input" placeholder="כמות" maxlength="15" title="כמות (לא חובה)">
-      <select id="cat-select"></select>
-      <button id="add-btn" onclick="addItem()">+ הוסף</button>
-    </div>
-
-    <!-- Toolbar -->
     <div class="toolbar">
       <div class="view-toggle">
         <button class="view-btn" id="view-all-btn" onclick="setView('all')">הכל</button>
         <button class="view-btn active" id="view-cat-btn" onclick="setView('cat')">לפי קטגוריה</button>
-      </div>
-      <button id="manage-cat-btn" onclick="toggleCatManager()">⚙️ קטגוריות</button>
-    </div>
-
-    <!-- Category manager -->
-    <div id="cat-manager">
-      <h4>סדר וניהול קטגוריות</h4>
-      <ul class="cat-list" id="cat-list"></ul>
-      <div class="add-cat-row">
-        <input type="text" id="new-cat-input" placeholder="שם קטגוריה חדשה (למשל: 🧁 ממתקים)" maxlength="40">
-        <button onclick="addCategory()">+ הוסף</button>
       </div>
     </div>
 
@@ -374,7 +391,7 @@
       <div class="footer-btns">
         <button id="whatsapp-btn" onclick="shareWhatsApp()" disabled>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="white" style="flex-shrink:0">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.030-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
             <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.555 4.122 1.528 5.855L.057 23.428a.5.5 0 0 0 .609.61l5.651-1.484A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.027-1.381l-.36-.214-3.733.98.997-3.648-.234-.375A9.818 9.818 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/>
           </svg>
           שלח לוואטסאפ
@@ -383,6 +400,53 @@
       </div>
     </div>
   </div>
+
+  <!-- ② PRODUCTS TO CHOOSE FROM -->
+  <div class="card">
+    <h2 class="select-title">➕ הוספת מוצרים לרשימה</h2>
+
+    <div class="add-form">
+      <input type="text" id="item-input" placeholder="מוצר חדש..." maxlength="80">
+      <input type="text" id="qty-input" placeholder="כמות" maxlength="15" title="כמות (לא חובה)">
+      <select id="cat-select"></select>
+      <button id="add-btn" onclick="addItem()">+ הוסף</button>
+    </div>
+
+    <button id="recent-btn" onclick="toggleRecent()">
+      🕘 <span id="recent-btn-label">המוצרים האחרונים שלי</span>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div id="recent-panel">
+      <div class="hint">לחיצה על מוצר מוסיפה אותו מיד לרשימה</div>
+      <div class="recent-chips" id="recent-chips"></div>
+    </div>
+
+    <div class="quick-section">
+      <div class="quick-header">
+        <h3>📦 מוצרים לבחירה — לחץ על קטגוריה כדי לפתוח</h3>
+        <div class="quick-sort-btns">
+          <button class="qsort-btn active" id="qsort-cat" onclick="setQuickSort('cat')">קטגוריות</button>
+          <button class="qsort-btn" id="qsort-abc" onclick="setQuickSort('abc')">א-ב</button>
+          <button class="qsort-btn" id="manage-cat-btn" onclick="toggleCatManager()">⚙️</button>
+        </div>
+      </div>
+
+      <div id="cat-manager">
+        <h4>סדר וניהול קטגוריות</h4>
+        <ul class="cat-list" id="cat-list"></ul>
+        <div class="add-cat-row">
+          <input type="text" id="new-cat-input" placeholder="שם קטגוריה חדשה (למשל: 🧁 ממתקים)" maxlength="40">
+          <button onclick="addCategory()">+ הוסף</button>
+        </div>
+      </div>
+
+      <div id="quick-chips"></div>
+    </div>
+  </div>
+
+  <div class="family-img-card">
+    <img src="family.jpg" alt="המשפחה שלנו">
+  </div>
 </div>
 
 <script type="module">
@@ -390,7 +454,7 @@
   import {
     getFirestore, collection, addDoc, onSnapshot,
     doc, updateDoc, deleteDoc, query, orderBy,
-    writeBatch, getDocs, setDoc, getDoc
+    writeBatch, getDocs, setDoc, getDoc, FieldPath, increment
   } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -429,6 +493,8 @@
   let viewMode       = "cat";
   let quickSort      = "cat";
   let currentQuick   = [];
+  const openCats     = new Set();   // categories the user expanded
+  let recentOpen     = false;
 
   // ── Auth ──────────────────────────────────────────────────
   window.selectMember = function(btn, name) {
@@ -575,6 +641,7 @@
     window._unsub2 = onSnapshot(query(quickCol, orderBy("name")), snap => {
       currentQuick = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderQuick(currentQuick);
+      renderRecent();
     });
   }
 
@@ -588,7 +655,8 @@
 
     const makeChip = item => {
       const chip = document.createElement("div");
-      chip.className = "quick-chip";
+      const already = isDuplicate(item.name);
+      chip.className = "quick-chip" + (already ? " in-list" : "");
       chip.dataset.id = item.id;
       chip.innerHTML = `<span class="chip-name">${escHtml(item.name)}</span>
         <span class="chip-cat-wrap">
@@ -601,14 +669,17 @@
         if (e.target.classList.contains("chip-del")) return;
         if (e.target.classList.contains("chip-cat-select") || e.target.closest(".chip-cat-wrap")) return;
         const cat = chip.querySelector(".chip-cat-select").value || categories[categories.length - 1] || "🛒 אחר";
-        quickAddToList(item.name, cat);
+        quickAddToList(item, cat);
       });
       return chip;
     };
 
     if (quickSort === "abc") {
-      const sorted = [...items].sort((a, b) => a.name.localeCompare(b.name, "he"));
-      sorted.forEach(item => container.appendChild(makeChip(item)));
+      const row = document.createElement("div");
+      row.className = "quick-chips";
+      [...items].sort((a, b) => a.name.localeCompare(b.name, "he"))
+        .forEach(item => row.appendChild(makeChip(item)));
+      container.appendChild(row);
       return;
     }
 
@@ -617,24 +688,89 @@
     catOrder.forEach(c => groups[c] = []);
     items.forEach(item => {
       const c = item.category && groups[item.category] !== undefined ? item.category : "ללא קטגוריה";
-      if (!groups[c]) groups[c] = [];
       groups[c].push(item);
     });
     catOrder.forEach(cat => {
       const group = groups[cat];
       if (!group || group.length === 0) return;
-      const wrapper = document.createElement("div");
-      wrapper.className = "quick-cat-group";
-      const label = document.createElement("div");
-      label.className = "quick-cat-label";
-      label.textContent = cat;
-      wrapper.appendChild(label);
-      const chipsRow = document.createElement("div");
-      chipsRow.className = "quick-cat-chips";
-      group.forEach(item => chipsRow.appendChild(makeChip(item)));
-      wrapper.appendChild(chipsRow);
-      container.appendChild(wrapper);
+      group.sort((a, b) => a.name.localeCompare(b.name, "he"));
+      const inListCount = group.filter(i => isDuplicate(i.name)).length;
+
+      const acc = document.createElement("div");
+      acc.className = "acc" + (openCats.has(cat) ? " open" : "");
+      const head = document.createElement("button");
+      head.className = "acc-head";
+      head.innerHTML = `<span class="acc-name">${escHtml(cat)}</span>
+        ${inListCount ? `<span class="acc-inlist">✓ ${inListCount} ברשימה</span>` : ""}
+        <span class="acc-count">${group.length} מוצרים</span>
+        <span class="acc-arrow">▼</span>`;
+      head.addEventListener("click", () => {
+        if (openCats.has(cat)) openCats.delete(cat); else openCats.add(cat);
+        acc.classList.toggle("open");
+      });
+      const body = document.createElement("div");
+      body.className = "acc-body";
+      group.forEach(item => body.appendChild(makeChip(item)));
+      acc.appendChild(head);
+      acc.appendChild(body);
+      container.appendChild(acc);
     });
+  }
+
+  // ── My recent products (per family member) ───────────────
+  window.toggleRecent = function() {
+    recentOpen = !recentOpen;
+    document.getElementById("recent-btn").classList.toggle("open", recentOpen);
+    document.getElementById("recent-panel").classList.toggle("open", recentOpen);
+  };
+
+  function lastUseByMe(q) {
+    let t = q.byUser && q.byUser[currentUser] ? q.byUser[currentUser].ts || 0 : 0;
+    // also count items currently on the list that I added (covers history from before this feature)
+    currentItems.forEach(i => {
+      if (i.who === currentUser && i.name.trim().toLowerCase() === q.name.trim().toLowerCase())
+        t = Math.max(t, i.ts || 0);
+    });
+    return t;
+  }
+
+  function renderRecent() {
+    const box = document.getElementById("recent-chips");
+    const mine = currentQuick
+      .map(q => ({ q, t: lastUseByMe(q) }))
+      .filter(x => x.t > 0)
+      .sort((a, b) => b.t - a.t)
+      .slice(0, 30);
+
+    document.getElementById("recent-btn-label").textContent =
+      `המוצרים האחרונים של ${currentUser}` + (mine.length ? ` (${mine.length})` : "");
+
+    box.innerHTML = "";
+    if (mine.length === 0) {
+      box.innerHTML = '<span class="quick-empty">עדיין לא בחרת מוצרים — אחרי שתוסיף, הם יופיעו כאן</span>';
+      return;
+    }
+    mine.forEach(({ q }) => {
+      const already = isDuplicate(q.name);
+      const b = document.createElement("button");
+      b.className = "recent-chip" + (already ? " in-list" : "");
+      b.textContent = (already ? "✓ " : "+ ") + q.name;
+      b.title = already ? "כבר ברשימה" : "הוסף לרשימה";
+      b.addEventListener("click", () => {
+        if (already) return;
+        quickAddToList(q, q.category || categories[categories.length - 1]);
+      });
+      box.appendChild(b);
+    });
+  }
+
+  async function recordUse(quickId) {
+    if (!currentUser || !quickId) return;
+    try {
+      await updateDoc(doc(db, "quickItems", quickId),
+        new FieldPath("byUser", currentUser, "ts"), Date.now(),
+        new FieldPath("byUser", currentUser, "n"), increment(1));
+    } catch (err) { console.error(err); }
   }
 
   window.deleteQuick = async function(e, id) {
@@ -646,9 +782,12 @@
     await updateDoc(doc(db, "quickItems", id), { category: newCat });
   };
 
-  async function quickAddToList(name, category) {
+  async function quickAddToList(item, category) {
+    const name = item.name;
     if (isDuplicate(name)) { showToast("⚠️ המוצר כבר ברשימה!"); return; }
     await addDoc(itemsCol, { name, qty: "", category: category || categories[categories.length-1], who: currentUser, done: false, ts: Date.now() });
+    showToast("✓ נוסף לרשימה: " + name, "#2ecc71");
+    recordUse(item.id);
   }
 
   async function ensureQuickItem(name, category) {
@@ -660,8 +799,11 @@
       const existingCat = existing.data().category || defaultCat;
       if (existingCat !== cat)
         await updateDoc(doc(db, "quickItems", existing.id), { category: cat });
+      await recordUse(existing.id);
     } else {
-      await addDoc(quickCol, { name: name.trim(), category: cat, ts: Date.now() });
+      const now = Date.now();
+      await addDoc(quickCol, { name: name.trim(), category: cat, ts: now,
+        byUser: currentUser ? { [currentUser]: { ts: now, n: 1 } } : {} });
     }
   }
 
@@ -675,6 +817,8 @@
         currentItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         renderList(currentItems);
         updateWhatsAppBtn();
+        renderQuick(currentQuick);
+        renderRecent();
       },
       err => { dot.className = "sync-dot"; console.error(err); }
     );
@@ -690,8 +834,9 @@
     ul.innerHTML = "";
 
     if (items.length === 0) {
-      ul.innerHTML = '<div class="list-empty"><span>🛍️</span>הרשימה ריקה – הוסף פריטים!</div>';
+      ul.innerHTML = '<div class="list-empty"><span>🛍️</span>הרשימה ריקה — בחר מוצרים למטה 👇</div>';
       document.getElementById("list-count").textContent = "";
+      document.getElementById("list-pill").textContent = "0";
       return;
     }
 
@@ -724,6 +869,7 @@
 
     const done = items.filter(i => i.done).length;
     document.getElementById("list-count").textContent = `${done}/${items.length} פריטים נקנו`;
+    document.getElementById("list-pill").textContent = String(items.length - done);
   }
 
   function makeListItem(item, showCat) {
