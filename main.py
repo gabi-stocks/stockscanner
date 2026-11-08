@@ -2,6 +2,7 @@ import yfinance as yf
 import pandas as pd
 import datetime
 import requests
+import os
 
 # ============================================================
 # סורק מניות בדפוס "התאוששות אחרי צניחה" (Capitulation Recovery)
@@ -54,6 +55,17 @@ def detect_consolidation(df, lookback=25, gap_days=10, max_range_pct=0.12):
     cons_low = float(window.min())
     range_pct = (cons_high - cons_low) / cons_low
     return (range_pct <= max_range_pct), cons_high, cons_low
+
+
+def write_github_output(results):
+    """כותב את מספר התוצאות ורשימת הטיקרים לשלבים הבאים בריצה (לצורך שליחת מייל)"""
+    out_path = os.environ.get("GITHUB_OUTPUT")
+    if not out_path:
+        return
+    tickers_found = [r["טיקר"].replace("<b>", "").replace("</b>", "") for r in results]
+    with open(out_path, "a", encoding="utf-8") as f:
+        f.write(f"count={len(results)}\n")
+        f.write(f"tickers={', '.join(tickers_found)}\n")
 
 
 def run_scanner():
@@ -177,6 +189,9 @@ def run_scanner():
     """
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(full_html)
+
+    write_github_output(results)
+    print(f"Found {len(results)} matching stocks")
 
 
 if __name__ == "__main__":
