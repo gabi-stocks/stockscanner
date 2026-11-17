@@ -263,15 +263,15 @@
 
     .cat-group-header {
       display: flex; align-items: center; gap: 8px;
-      padding: 8px 4px; margin: 10px 0 4px; border-bottom: 2px solid #f0f0f0;
+      padding: 5px 4px; margin: 8px 0 4px; border-bottom: 2px solid #f0f0f0;
     }
     .cat-group-header .cat-emoji-h { font-size: 1.1rem; }
     .cat-group-header .cat-name-h  { font-size: 0.85rem; font-weight: 700; color: #888; }
     .cat-group-header .cat-count-h { font-size: 0.75rem; color: #ccc; }
 
     .list-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 11px 13px; border-radius: 12px; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 10px; border-radius: 11px; margin-bottom: 4px;
       background: #fafafa; border: 2px solid transparent;
       transition: all 0.2s; animation: slideIn 0.2s ease;
     }
@@ -292,13 +292,20 @@
     .list-item.done .check-btn { background: #667eea; border-color: #667eea; }
 
     .item-info { flex: 1; min-width: 0; }
-    .item-name { font-size: 1.12rem; color: #1a1a2e; font-weight: 800; line-height: 1.3; letter-spacing: 0.1px; }
-    .item-meta { font-size: 0.73rem; color: #bbb; margin-top: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+    .item-name {
+      font-size: 1.05rem; color: #1a1a2e; font-weight: 800; line-height: 1.25;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .item-name.long { font-size: 0.9rem; }
+    .item-meta {
+      font-size: 0.72rem; color: #bbb; margin-top: 2px; display: flex; align-items: center;
+      gap: 6px; white-space: nowrap; overflow: hidden;
+    }
 
     /* inline qty editor on existing item */
     .item-qty-wrap { display: inline-flex; align-items: center; gap: 3px; }
     .item-qty-input {
-      width: 60px; padding: 2px 6px; border: 1.5px solid #c8e6c9;
+      width: 52px; padding: 1px 5px; border: 1.5px solid #c8e6c9;
       border-radius: 8px; font-size: 0.75rem; color: #388e3c; font-weight: 600;
       background: #e8f5e9; text-align: center; direction: ltr; outline: none;
       transition: border-color 0.2s;
@@ -318,14 +325,14 @@
     }
 
     .delete-btn {
-      padding: 4px 9px; background: none; border: none;
+      padding: 4px 5px; flex-shrink: 0; background: none; border: none;
       color: #ddd; font-size: 0.95rem; cursor: pointer; border-radius: 7px; transition: all 0.2s;
     }
     .delete-btn:hover { background: #fff0f0; color: #e74c3c; }
 
     /* PERMANENT (pin) */
     .pin-btn {
-      min-width: 34px; height: 34px; border-radius: 10px; cursor: pointer;
+      min-width: 30px; width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0; cursor: pointer;
       border: 1.5px dashed #d5d9ea; background: white; font-size: 0.95rem;
       display: flex; align-items: center; justify-content: center;
       filter: grayscale(1); opacity: 0.55; transition: all 0.15s;
@@ -356,7 +363,7 @@
 
     /* PHOTO */
     .photo-btn {
-      min-width: 34px; height: 34px; padding: 0 8px; border-radius: 10px;
+      min-width: 30px; height: 30px; padding: 0 5px; border-radius: 9px; flex-shrink: 0;
       border: 1.5px dashed #c5cbe8; background: white; color: #8a93b8;
       font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
       gap: 3px; transition: all 0.15s; font-family: inherit;
@@ -364,10 +371,10 @@
     .photo-btn:hover { border-color: #667eea; color: #667eea; }
     .photo-btn.has-photo {
       border: 2px solid #ff9800; background: #fff3e0; color: #e65100;
-      font-size: 0.75rem; font-weight: 700; padding: 0 7px 0 4px;
+      font-size: 0.7rem; font-weight: 700; padding: 0 5px 0 3px;
     }
     .photo-btn.has-photo img {
-      width: 24px; height: 24px; border-radius: 6px; object-fit: cover; display: block;
+      width: 20px; height: 20px; border-radius: 6px; object-fit: cover; display: block;
     }
     .photo-btn.busy { opacity: 0.5; pointer-events: none; }
 
@@ -432,9 +439,11 @@
     .sync-dot.on { background: #2ecc71; }
 
     @media (max-width: 500px) {
+      #app { padding: 10px; }
+      .card { padding: 16px 12px; }
       .add-form select { min-width: 90px; }
       #qty-input { width: 58px; min-width: 58px; }
-      .item-qty-input { width: 50px; }
+      .item-qty-input { width: 44px; }
     }
   </style>
 </head>
@@ -1023,10 +1032,11 @@
     const catOptions = categories.map(c =>
       `<option value="${escHtml(c)}" ${c === item.category ? "selected" : ""}>${escHtml(c)}</option>`
     ).join("");
+    // בתצוגה לפי קטגוריה הכותרת כבר מציגה את הקטגוריה, אז לא חוזרים עליה בכל שורה
     const catBadge = showCat
       ? `<select class="item-cat-select" onchange="changeCat('${item.id}',this.value)">${catOptions}</select>`
-      : `<span class="item-cat-badge">${escHtml(item.category || "")}</span>`;
-    const whoSpan = item.who ? `<span class="item-who">ביקש/ה: ${escHtml(item.who)}</span>` : "";
+      : "";
+    const whoSpan = item.who ? `<span class="item-who">👤 ${escHtml(item.who)}</span>` : "";
     const fixed = isFixed(item.name);
     const pinBtn = `<button class="pin-btn${fixed ? " on" : ""}" title="${fixed ? "מוצר קבוע — לחץ לביטול" : "סמן כמוצר קבוע"}" onclick="toggleFixed('${item.id}')">📌</button>`;
     const photoBtn = item.photo
@@ -1036,7 +1046,7 @@
     li.innerHTML = `
       <button class="check-btn" onclick="toggleDone('${item.id}',${item.done})">${item.done ? "✓" : ""}</button>
       <div class="item-info">
-        <div class="item-name">${escHtml(item.name)}</div>
+        <div class="item-name${item.name.length > 16 ? " long" : ""}" title="${escHtml(item.name)}">${escHtml(item.name)}</div>
         <div class="item-meta">
           ${catBadge}
           <span class="item-qty-wrap">
@@ -1048,7 +1058,7 @@
               data-id="${item.id}"
               data-orig="${escHtml(item.qty || '')}">
           </span>
-          ${fixed ? '<span class="fixed-tag">📌 קבוע</span>' : ""}
+          ${fixed ? '<span class="fixed-tag">קבוע</span>' : ""}
           ${whoSpan}
         </div>
       </div>
