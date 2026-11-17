@@ -323,6 +323,54 @@
     }
     .delete-btn:hover { background: #fff0f0; color: #e74c3c; }
 
+    /* PHOTO */
+    .photo-btn {
+      min-width: 34px; height: 34px; padding: 0 8px; border-radius: 10px;
+      border: 1.5px dashed #c5cbe8; background: white; color: #8a93b8;
+      font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      gap: 3px; transition: all 0.15s; font-family: inherit;
+    }
+    .photo-btn:hover { border-color: #667eea; color: #667eea; }
+    .photo-btn.has-photo {
+      border: 2px solid #ff9800; background: #fff3e0; color: #e65100;
+      font-size: 0.75rem; font-weight: 700; padding: 0 7px 0 4px;
+    }
+    .photo-btn.has-photo img {
+      width: 24px; height: 24px; border-radius: 6px; object-fit: cover; display: block;
+    }
+    .photo-btn.busy { opacity: 0.5; pointer-events: none; }
+
+    /* PHOTO SHEETS */
+    .sheet-bg {
+      display: none; position: fixed; inset: 0; background: rgba(20,20,40,0.6);
+      z-index: 9000; align-items: flex-end; justify-content: center;
+    }
+    .sheet-bg.open { display: flex; }
+    .sheet {
+      background: white; width: 100%; max-width: 480px; border-radius: 20px 20px 0 0;
+      padding: 18px 18px 24px; box-shadow: 0 -8px 30px rgba(0,0,0,0.25);
+      animation: sheetUp 0.18s ease;
+    }
+    @keyframes sheetUp { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .sheet h3 { font-size: 1rem; color: #333; margin-bottom: 4px; }
+    .sheet .sheet-sub { font-size: 0.8rem; color: #999; margin-bottom: 14px; }
+    .sheet-btn {
+      width: 100%; padding: 13px; margin-bottom: 8px; border-radius: 12px; border: none;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .sheet-btn.primary { background: linear-gradient(135deg,#667eea,#764ba2); color: white; }
+    .sheet-btn.light   { background: #f0f2ff; color: #4a53a0; }
+    .sheet-btn.danger  { background: #fff0f0; color: #e74c3c; }
+    .sheet-btn.cancel  { background: none; color: #999; margin-bottom: 0; }
+    #photo-view .sheet { max-width: 560px; }
+    #photo-view-img {
+      width: 100%; max-height: 62vh; object-fit: contain; border-radius: 12px;
+      background: #f4f4f8; display: block; margin-bottom: 12px;
+    }
+    .sheet-row { display: flex; gap: 8px; }
+    .sheet-row .sheet-btn { margin-bottom: 0; }
+
     /* FOOTER */
     .list-footer {
       display: flex; justify-content: space-between; align-items: center;
@@ -472,6 +520,34 @@
     <img src="family.jpg" alt="המשפחה שלנו">
   </div>
 </div>
+
+<!-- Photo: choose source -->
+<div class="sheet-bg" id="photo-pick" onclick="if(event.target===this)closeSheets()">
+  <div class="sheet">
+    <h3>📷 הוספת תמונה למוצר</h3>
+    <div class="sheet-sub" id="photo-pick-name"></div>
+    <button class="sheet-btn primary" onclick="pickPhoto('camera')">📸 צלם תמונה</button>
+    <button class="sheet-btn light" onclick="pickPhoto('gallery')">🖼️ בחר מהגלריה</button>
+    <button class="sheet-btn cancel" onclick="closeSheets()">ביטול</button>
+  </div>
+</div>
+
+<!-- Photo: view -->
+<div class="sheet-bg" id="photo-view" onclick="if(event.target===this)closeSheets()">
+  <div class="sheet">
+    <h3 id="photo-view-name"></h3>
+    <div class="sheet-sub" id="photo-view-by"></div>
+    <img id="photo-view-img" alt="תמונת המוצר">
+    <div class="sheet-row">
+      <button class="sheet-btn light" onclick="replacePhoto()">🔄 החלף</button>
+      <button class="sheet-btn danger" onclick="removePhoto()">🗑️ מחק תמונה</button>
+    </div>
+    <button class="sheet-btn cancel" style="margin-top:8px" onclick="closeSheets()">סגור</button>
+  </div>
+</div>
+
+<input type="file" id="photo-camera"  accept="image/*" capture="environment" hidden>
+<input type="file" id="photo-gallery" accept="image/*" hidden>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -907,6 +983,9 @@
       ? `<select class="item-cat-select" onchange="changeCat('${item.id}',this.value)">${catOptions}</select>`
       : `<span class="item-cat-badge">${escHtml(item.category || "")}</span>`;
     const whoSpan = item.who ? `<span class="item-who">ביקש/ה: ${escHtml(item.who)}</span>` : "";
+    const photoBtn = item.photo
+      ? `<button class="photo-btn has-photo" title="יש תמונה — לחץ לצפייה" onclick="openPhotoView('${item.id}')"><img src="${item.photo}" alt="">תמונה</button>`
+      : `<button class="photo-btn" title="הוסף תמונה" onclick="openPhotoPick('${item.id}')">📷</button>`;
 
     li.innerHTML = `
       <button class="check-btn" onclick="toggleDone('${item.id}',${item.done})">${item.done ? "✓" : ""}</button>
@@ -926,6 +1005,7 @@
           ${whoSpan}
         </div>
       </div>
+      ${photoBtn}
       <button class="delete-btn" onclick="deleteItem('${item.id}')">✕</button>`;
 
     // save on blur or Enter — only if changed
@@ -966,7 +1046,7 @@
       text += `*${cat}*\n`;
       group.forEach(item => {
         const qty = item.qty ? ` (${item.qty})` : "";
-        text += `• ${item.name}${qty}\n`;
+        text += `• ${item.name}${qty}${item.photo ? " 📷" : ""}\n`;
       });
       text += "\n";
     });
@@ -1037,6 +1117,108 @@
   function escHtml(s) {
     return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
+
+  // ── Product photos ───────────────────────────────────────
+  // התמונה נשמרת מכווצת (עד ~100KB) בתוך פריט הרשימה עצמו,
+  // כך שהיא נמחקת אוטומטית כשהפריט נמחק ולא צריך שירות אחסון נוסף.
+  let photoItemId = null;
+  const PHOTO_MAX_SIDE = 900;
+  const PHOTO_MAX_CHARS = 300000;   // הגבלת גודל במסד הנתונים
+
+  const findItem = id => currentItems.find(i => i.id === id);
+
+  window.closeSheets = function() {
+    document.querySelectorAll(".sheet-bg").forEach(el => el.classList.remove("open"));
+  };
+
+  window.openPhotoPick = function(id) {
+    const it = findItem(id); if (!it) return;
+    photoItemId = id;
+    document.getElementById("photo-pick-name").textContent = it.name;
+    closeSheets();
+    document.getElementById("photo-pick").classList.add("open");
+  };
+
+  window.openPhotoView = function(id) {
+    const it = findItem(id); if (!it || !it.photo) return;
+    photoItemId = id;
+    document.getElementById("photo-view-name").textContent = "🖼️ " + it.name;
+    document.getElementById("photo-view-by").textContent = it.photoBy ? "צולם/הועלה ע\"י " + it.photoBy : "";
+    document.getElementById("photo-view-img").src = it.photo;
+    closeSheets();
+    document.getElementById("photo-view").classList.add("open");
+  };
+
+  window.replacePhoto = function() { if (photoItemId) openPhotoPick(photoItemId); };
+
+  window.removePhoto = async function() {
+    if (!photoItemId) return;
+    if (!confirm("למחוק את התמונה של המוצר?")) return;
+    const id = photoItemId;
+    closeSheets();
+    await updateDoc(doc(db, "shoppingItems", id), { photo: "", photoBy: "" });
+    showToast("התמונה נמחקה", "#888");
+  };
+
+  window.pickPhoto = function(src) {
+    const inp = document.getElementById(src === "camera" ? "photo-camera" : "photo-gallery");
+    inp.value = "";
+    closeSheets();
+    inp.click();
+  };
+
+  function loadImage(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload  = () => { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("bad image")); };
+      img.src = url;
+    });
+  }
+
+  async function compressImage(file) {
+    const img = await loadImage(file);
+    let side = PHOTO_MAX_SIDE, quality = 0.72, data = "";
+    for (let tries = 0; tries < 6; tries++) {
+      const scale = Math.min(1, side / Math.max(img.naturalWidth, img.naturalHeight));
+      const w = Math.round(img.naturalWidth * scale), h = Math.round(img.naturalHeight * scale);
+      const c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      const ctx = c.getContext("2d");
+      ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      data = c.toDataURL("image/jpeg", quality);
+      if (data.length <= PHOTO_MAX_CHARS) return data;
+      side = Math.round(side * 0.8); quality = Math.max(0.5, quality - 0.06);
+    }
+    return data.length <= PHOTO_MAX_CHARS ? data : null;
+  }
+
+  async function onPhotoChosen(e) {
+    const file = e.target.files && e.target.files[0];
+    const id = photoItemId;
+    if (!file || !id) return;
+    if (!file.type.startsWith("image/")) { showToast("⚠️ הקובץ שנבחר אינו תמונה"); return; }
+    const btn = document.querySelector(`.photo-btn[onclick*="'${id}'"]`);
+    if (btn) btn.classList.add("busy");
+    showToast("⏳ מעלה תמונה...", "#667eea");
+    try {
+      const data = await compressImage(file);
+      if (!data) { showToast("⚠️ התמונה גדולה מדי, נסה תמונה אחרת"); return; }
+      await updateDoc(doc(db, "shoppingItems", id), { photo: data, photoBy: currentUser });
+      showToast("✓ התמונה נוספה", "#2ecc71");
+    } catch (err) {
+      console.error(err);
+      showToast("⚠️ לא הצלחתי להוסיף את התמונה");
+    } finally {
+      if (btn) btn.classList.remove("busy");
+    }
+  }
+
+  document.getElementById("photo-camera").addEventListener("change", onPhotoChosen);
+  document.getElementById("photo-gallery").addEventListener("change", onPhotoChosen);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheets(); });
 
   // ── Autocomplete (השלמה מתוך המוצרים הקיימים בלבד) ─────────
   const acInput = document.getElementById("item-input");
