@@ -323,6 +323,37 @@
     }
     .delete-btn:hover { background: #fff0f0; color: #e74c3c; }
 
+    /* PERMANENT (pin) */
+    .pin-btn {
+      min-width: 34px; height: 34px; border-radius: 10px; cursor: pointer;
+      border: 1.5px dashed #d5d9ea; background: white; font-size: 0.95rem;
+      display: flex; align-items: center; justify-content: center;
+      filter: grayscale(1); opacity: 0.55; transition: all 0.15s;
+    }
+    .pin-btn:hover { opacity: 0.9; border-color: #667eea; }
+    .pin-btn.on {
+      filter: none; opacity: 1; border: 2px solid #e53935; background: #ffebee;
+    }
+    .fixed-tag {
+      display: inline-block; padding: 1px 7px; border-radius: 10px;
+      background: #ffebee; color: #c62828; font-size: 0.68rem; font-weight: 700;
+    }
+    .quick-chip.fixed .chip-name::after { content: " 📌"; font-size: 0.75rem; }
+
+    #new-list-btn {
+      padding: 6px 12px; background: #fff7e6; border: 1.5px solid #ffb74d;
+      border-radius: 9px; color: #e65100; font-size: 0.77rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s; font-family: inherit;
+    }
+    #new-list-btn:hover { background: #ffe0b2; }
+    .confirm-box {
+      background: #fff8f0; border: 1.5px solid #ffcc80; border-radius: 12px;
+      padding: 12px 14px; margin-bottom: 14px; font-size: 0.86rem; color: #5d4037; line-height: 1.6;
+    }
+    .confirm-box b { color: #c62828; }
+    .confirm-box .keep { color: #2e7d32; }
+    .sheet-btn.warn { background: linear-gradient(135deg,#ff7043,#e53935); color: white; }
+
     /* PHOTO */
     .photo-btn {
       min-width: 34px; height: 34px; padding: 0 8px; border-radius: 10px;
@@ -466,6 +497,7 @@
           שלח לוואטסאפ
         </button>
         <button id="clear-done-btn" onclick="clearDone()">מחק שנקנו ✓</button>
+        <button id="new-list-btn" onclick="openNewList()">🔄 רשימה חדשה</button>
       </div>
     </div>
   </div>
@@ -529,6 +561,17 @@
     <button class="sheet-btn primary" onclick="pickPhoto('camera')">📸 צלם תמונה</button>
     <button class="sheet-btn light" onclick="pickPhoto('gallery')">🖼️ בחר מהגלריה</button>
     <button class="sheet-btn cancel" onclick="closeSheets()">ביטול</button>
+  </div>
+</div>
+
+<!-- New list: confirm -->
+<div class="sheet-bg" id="newlist-sheet" onclick="if(event.target===this)closeSheets()">
+  <div class="sheet">
+    <h3>🔄 להתחיל רשימה חדשה?</h3>
+    <div class="sheet-sub">הפעולה אינה ניתנת לביטול</div>
+    <div class="confirm-box" id="newlist-summary"></div>
+    <button class="sheet-btn warn" id="newlist-confirm" onclick="confirmNewList()">כן, מחק והתחל רשימה חדשה</button>
+    <button class="sheet-btn cancel" onclick="closeSheets()">ביטול — השאר את הרשימה</button>
   </div>
 </div>
 
@@ -740,6 +783,7 @@
   function subscribeQuick() {
     window._unsub2 = onSnapshot(query(quickCol, orderBy("name")), snap => {
       currentQuick = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderList(currentItems);
       renderQuick(currentQuick);
       renderRecent();
     });
@@ -756,7 +800,7 @@
     const makeChip = item => {
       const chip = document.createElement("div");
       const already = isDuplicate(item.name);
-      chip.className = "quick-chip" + (already ? " in-list" : "");
+      chip.className = "quick-chip" + (already ? " in-list" : "") + (item.fixed ? " fixed" : "");
       chip.dataset.id = item.id;
       chip.innerHTML = `<span class="chip-name">${escHtml(item.name)}</span>
         <span class="chip-cat-wrap">
@@ -983,6 +1027,8 @@
       ? `<select class="item-cat-select" onchange="changeCat('${item.id}',this.value)">${catOptions}</select>`
       : `<span class="item-cat-badge">${escHtml(item.category || "")}</span>`;
     const whoSpan = item.who ? `<span class="item-who">ביקש/ה: ${escHtml(item.who)}</span>` : "";
+    const fixed = isFixed(item.name);
+    const pinBtn = `<button class="pin-btn${fixed ? " on" : ""}" title="${fixed ? "מוצר קבוע — לחץ לביטול" : "סמן כמוצר קבוע"}" onclick="toggleFixed('${item.id}')">📌</button>`;
     const photoBtn = item.photo
       ? `<button class="photo-btn has-photo" title="יש תמונה — לחץ לצפייה" onclick="openPhotoView('${item.id}')"><img src="${item.photo}" alt="">תמונה</button>`
       : `<button class="photo-btn" title="הוסף תמונה" onclick="openPhotoPick('${item.id}')">📷</button>`;
@@ -1002,9 +1048,11 @@
               data-id="${item.id}"
               data-orig="${escHtml(item.qty || '')}">
           </span>
+          ${fixed ? '<span class="fixed-tag">📌 קבוע</span>' : ""}
           ${whoSpan}
         </div>
       </div>
+      ${pinBtn}
       ${photoBtn}
       <button class="delete-btn" onclick="deleteItem('${item.id}')">✕</button>`;
 
@@ -1117,6 +1165,72 @@
   function escHtml(s) {
     return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
+
+  // ── Permanent products & new list ─────────────────────────
+  // הסימון "קבוע" נשמר על המוצר עצמו (במאגר המוצרים), כך שהוא נשאר גם אחרי רשימה חדשה.
+  const norm = n => (n || "").trim().toLowerCase();
+  const quickByName = name => currentQuick.find(q => norm(q.name) === norm(name));
+  function isFixed(name) { const q = quickByName(name); return !!(q && q.fixed); }
+
+  window.toggleFixed = async function(itemId) {
+    const it = findItem(itemId); if (!it) return;
+    const q = quickByName(it.name);
+    const next = !(q && q.fixed);
+    try {
+      if (q) await updateDoc(doc(db, "quickItems", q.id), { fixed: next });
+      else   await addDoc(quickCol, { name: it.name.trim(), category: it.category || categories[categories.length - 1], ts: Date.now(), fixed: next });
+      showToast(next ? "📌 " + it.name + " סומן כמוצר קבוע" : it.name + " כבר לא קבוע", next ? "#e53935" : "#888");
+    } catch (err) { console.error(err); showToast("⚠️ לא הצלחתי לעדכן"); }
+  };
+
+  window.openNewList = function() {
+    const fixedQ = currentQuick.filter(q => q.fixed);
+    const fixedNames = new Set(fixedQ.map(q => norm(q.name)));
+    const toDelete = currentItems.filter(i => !fixedNames.has(norm(i.name))).length;
+    const names = fixedQ.map(q => escHtml(q.name)).join(", ");
+    document.getElementById("newlist-summary").innerHTML =
+      `<b>יימחקו ${toDelete} מוצרים</b> מהרשימה הנוכחית.<br>` +
+      (fixedQ.length
+        ? `<span class="keep">📌 יישארו ${fixedQ.length} מוצרים קבועים:</span> ${names}`
+        : `אין מוצרים שסומנו כקבועים, לכן הרשימה תהיה ריקה.`);
+    closeSheets();
+    document.getElementById("newlist-sheet").classList.add("open");
+  };
+
+  window.confirmNewList = async function() {
+    const btn = document.getElementById("newlist-confirm");
+    btn.disabled = true;
+    try {
+      const fixedQ = currentQuick.filter(q => q.fixed);
+      const snap = await getDocs(itemsCol);
+      const batch = writeBatch(db);
+      const kept = new Set();
+      snap.docs.forEach(d => {
+        const data = d.data();
+        const key = norm(data.name);
+        const q = fixedQ.find(f => norm(f.name) === key);
+        if (q && !kept.has(key)) {
+          // מוצר קבוע שכבר ברשימה: נשאר (עם הכמות והתמונה), ומסומן כ"לא נקנה"
+          kept.add(key);
+          batch.update(d.ref, { done: false });
+        } else {
+          batch.delete(d.ref);
+        }
+      });
+      const now = Date.now();
+      fixedQ.forEach((q, i) => {
+        if (kept.has(norm(q.name))) return;
+        batch.set(doc(itemsCol), { name: q.name, qty: "", category: q.category || categories[categories.length - 1],
+          who: currentUser, done: false, ts: now - i });
+      });
+      await batch.commit();
+      closeSheets();
+      showToast(`✓ רשימה חדשה — ${fixedQ.length} מוצרים קבועים`, "#2ecc71");
+    } catch (err) {
+      console.error(err);
+      showToast("⚠️ לא הצלחתי ליצור רשימה חדשה");
+    } finally { btn.disabled = false; }
+  };
 
   // ── Product photos ───────────────────────────────────────
   // התמונה נשמרת מכווצת (עד ~100KB) בתוך פריט הרשימה עצמו,
